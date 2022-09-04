@@ -9,7 +9,7 @@ public:
     ~yyTexture();
 
     int load(const std::string &filename);
-    unsigned int getTexture() { return texture_; }
+    unsigned int getTextureId() { return texture_; }
 
 private:
     unsigned int texture_;

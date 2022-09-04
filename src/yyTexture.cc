@@ -31,10 +31,9 @@ int yyTexture::load(const std::string &filename)
     glBindTexture(GL_TEXTURE_2D, texture_);
 
     // 加载并生成纹理
-    // glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    // (第二个参数为纹理指定多级渐远纹理的级别，如果启用mipmap的的话可设置。这里我们填0，也就是基本级别)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image.getWidth(), image.getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image.data());
-    glGenerateMipmap(GL_TEXTURE_2D);
-    // glPixelStorei(GL_UNPACK_ALIGNMENT, 0);
+    // glGenerateMipmap(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D, 0);
     return 0;

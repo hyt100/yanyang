@@ -41,9 +41,9 @@ public:
     // textureUnit: 0...15
     void setTexture(const std::string &name, yyTexture &texture, unsigned int textureUnit)
     {
-        glActiveTexture(GL_TEXTURE0 + textureUnit);         // 在绑定纹理之前先激活纹理单元
-        glBindTexture(GL_TEXTURE_2D, texture.getTexture()); // 绑定纹理
-        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), textureUnit);  // 告诉OpenGL每个着色器的采样器属于哪个纹理单元
+        glActiveTexture(GL_TEXTURE0 + textureUnit);           // 激活纹理单元
+        glBindTexture(GL_TEXTURE_2D, texture.getTextureId()); // 绑定纹理对象到激活的纹理单元
+        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), textureUnit);  // 告诉着色器的采样器使用哪个纹理单元
     }
 
     static GLenum checkError(const char *file, int line);
