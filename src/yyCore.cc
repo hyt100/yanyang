@@ -31,6 +31,10 @@ int yyCore::init()
     glfwSetFramebufferSizeCallback(window_, framebuffer_size_callback);
     glfwGetFramebufferSize(window_, &framebuffWidth_, &framebuffHeight_); //获取渲染缓冲区大小
 
+    glfwSetCursorPosCallback(window_, mouse_callback);
+    glfwSetScrollCallback(window_, scroll_callback);
+    // glfwSetInputMode(window_, GLFW_CURSOR, GLFW_CURSOR_DISABLED); //设置为DISABLED，则不会显示鼠标光标
+
     // glad: load all OpenGL function pointers
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         throw std::runtime_error("Failed to initialize GLAD");
@@ -74,8 +78,33 @@ void yyCore::framebuffer_size_callback(GLFWwindow* window, int width, int height
     framebuffHeight_ = height;
 }
 
+// process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void yyCore::processInput()
 {
     if(glfwGetKey(window_, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window_, true);
+    if(glfwGetKey(window_, GLFW_KEY_LEFT) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_LEFT);
+    if(glfwGetKey(window_, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_RIGHT);
+    if(glfwGetKey(window_, GLFW_KEY_UP) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_UP);
+    if(glfwGetKey(window_, GLFW_KEY_DOWN) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_DOWN);
+    if(glfwGetKey(window_, GLFW_KEY_EQUAL) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_ZOOMIN);
+    if(glfwGetKey(window_, GLFW_KEY_MINUS) == GLFW_PRESS)
+        app_->keyprocess(YYEVENT_ZOOMOUT);
+}
+
+// glfw: whenever the mouse moves, this callback is called
+void yyCore::mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
+{
+    // std::cout << "mouse_callback: " << xposIn << ", " << yposIn << std::endl;
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+void yyCore::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    // std::cout << "scroll_callback: " << xoffset << ", " << yoffset << std::endl;
 }

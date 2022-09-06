@@ -4,6 +4,7 @@
 #include "yyBaseApp.h"
 #include "yyMesh.h"
 #include "yyTexture.h"
+#include "yyPerspectiveCamera.h"
 
 class yyCore
 {
@@ -31,6 +32,8 @@ private:
     yyCore() {}
     void processInput();
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+    static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
+    static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 private:
     std::string windowName_;
@@ -40,3 +43,5 @@ private:
 };
 
 #define yyCoreInstance (yyCore::getInstance())
+#define yyFrambuffWidth   (yyCoreInstance.framebuffWidth_)
+#define yyFrambuffHeight  (yyCoreInstance.framebuffHeight_)
