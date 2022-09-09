@@ -5,14 +5,18 @@
 class yyShader
 {
 public:
-    yyShader() { programObject_ = 0; }
+    using Ptr = std::shared_ptr<yyShader>;
+    static Ptr create(const std::string &vertexShaderFile, const std::string &fragmentShaderFile)
+    {
+        return std::make_shared<yyShader>(vertexShaderFile, fragmentShaderFile);
+    }
+
+    yyShader(const std::string &vertexShaderFile, const std::string &fragmentShaderFile);
     ~yyShader()
     {
         if (programObject_)
             glDeleteProgram(programObject_);
     }
-
-    void load(const std::string &vertexShaderFile, const std::string &fragmentShaderFile);
 
     void begin();
     void end();
@@ -39,11 +43,12 @@ public:
         glUniform1f(glGetUniformLocation(programObject_, name.c_str()), value); 
     }
     // textureUnit: 0...15
-    void setTexture(const std::string &name, yyTexture &texture, unsigned int textureUnit)
+    void setTexture(const std::string &samplerName, unsigned int textureUnit)
     {
-        glActiveTexture(GL_TEXTURE0 + textureUnit);           // 激活纹理单元
-        glBindTexture(GL_TEXTURE_2D, texture.getTextureId()); // 绑定纹理对象到激活的纹理单元
-        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), textureUnit);  // 告诉着色器的采样器使用哪个纹理单元
+        if (textureUnit > 15) {
+            std::cout << "warning: textureUnit value greater than 15. " << std::endl;
+        }
+        setInt(samplerName, textureUnit);  // 告诉着色器的采样器使用哪个纹理单元
     }
 
     static GLenum checkError(const char *file, int line);

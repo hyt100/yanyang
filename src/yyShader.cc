@@ -33,7 +33,7 @@ static unsigned int loadShader(GLenum type, const char *shaderSource)
     return shader;
 }
 
-void yyShader::load(const std::string &vertexShaderFile, const std::string &fragmentShaderFile)
+yyShader::yyShader(const std::string &vertexShaderFile, const std::string &fragmentShaderFile)
 {
     yyFileReader vertexShaderSource(vertexShaderFile.c_str());
     yyFileReader fragmentShaderSource(fragmentShaderFile.c_str());

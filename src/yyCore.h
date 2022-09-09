@@ -11,7 +11,7 @@ class yyCore
 public:
     virtual ~yyCore() {
         // glfw: terminate, clearing all previously allocated GLFW resources.
-        glfwTerminate();
+        glfwTerminate();  // 调用前必须已释放了所有的资源，否则会引起coredump
     }
 
     static yyCore& getInstance()

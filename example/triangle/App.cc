@@ -6,33 +6,35 @@ void App::setup()
     glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f);
     camera_ = yyPerspectiveCamera::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
-    std::vector<float> vertices = {
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f,
-        0.0f,  0.5f, 0.0f
+    std::vector<glm::vec3> vertices = {
+        glm::vec3(-0.5f, -0.5f, 0.0f),
+        glm::vec3(0.5f, -0.5f, 0.0f),
+        glm::vec3(0.0f,  0.5f, 0.0f)
     };
-    std::vector<float> colors = {
-        1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 1.0f
+    std::vector<glm::vec3> colors = {
+        glm::vec3(1.0f, 0.0f, 0.0f),
+        glm::vec3(0.0f, 1.0f, 0.0f),
+        glm::vec3(0.0f, 0.0f, 1.0f)
     };
-    std::vector<float> uvs = {
-        0.0f, 0.0f, 
-        1.0f, 0.0f,
-        0.0f, 1.0f
+    std::vector<glm::vec2> texCoords = {
+        glm::vec2(0.0f, 0.0f), 
+        glm::vec2(1.0f, 0.0f),
+        glm::vec2(0.0f, 1.0f)
     };
     std::vector<unsigned int> indices = {
         0, 1, 2
     };
 
-    mesh_.addVertex(vertices);
-    mesh_.addIndices(indices);
-    mesh_.addColor(colors);
-    mesh_.addUV(uvs);
-    mesh_.bulid();
+    pShader_ = yyShader::create("../example/triangle/shader.vert", "../example/triangle/shader.frag");
+    pTextures_.push_back(yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true));
 
-    shader_.load("../example/triangle/shader.vert", "../example/triangle/shader.frag");
-    texture_.load("../assets/lena_512x512.jpg");
+    pMesh_ = yyMesh::create();
+    pMesh_->addVertex(vertices);
+    pMesh_->addIndices(indices);
+    pMesh_->addColor(colors);
+    pMesh_->addTexCoords(texCoords);
+    pMesh_->addTextures(pTextures_);
+    pMesh_->bulid();
 }
 
 void App::update()
@@ -44,12 +46,11 @@ void App::update()
 void App::draw()
 {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    shader_.begin();
-    shader_.setMat4("mvp", mvpMat_);
-    shader_.setBool("uUseTexture", false);
-    shader_.setTexture("uTexture", texture_, 0);
-    mesh_.draw(true);
-    shader_.end();
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    pShader_->begin();
+    pShader_->setMat4("mvp", mvpMat_);
+    pShader_->setBool("uUseTexture", true);
+    pMesh_->draw(pShader_, false);
+    pShader_->end();
     yyShaderCheckError();
 }

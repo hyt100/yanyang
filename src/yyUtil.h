@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <array>
 #include <memory>
 
 #define yyPI             3.14159265359

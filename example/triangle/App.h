@@ -22,7 +22,7 @@ private:
     yyPerspectiveCamera::Ptr camera_;
     glm::mat4 modelMat_ = glm::mat4(1.0f);
     glm::mat4 mvpMat_ = glm::mat4(1.0f);
-    yyShader shader_;
-    yyTexture texture_;
-    yyMesh mesh_;
+    yyShader::Ptr pShader_;
+    std::vector<yyTexture::Ptr> pTextures_;
+    yyMesh::Ptr pMesh_;
 };
