@@ -11,15 +11,15 @@ public:
     void update();
     void keyprocess(yyEvent event)
     {
-        if (camera_) {
-            camera_->keyprocess(event);
+        if (pCamera_) {
+            pCamera_->keyprocess(event);
         }
     }
 
     void draw();
 
 private:
-    yyPerspectiveCamera::Ptr camera_;
+    yyPerspectiveCamera::Ptr pCamera_;
     glm::mat4 modelMat_ = glm::mat4(1.0f);
     glm::mat4 mvpMat_ = glm::mat4(1.0f);
     yyShader::Ptr pShader_;

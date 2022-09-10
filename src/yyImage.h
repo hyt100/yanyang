@@ -1,15 +1,24 @@
 #pragma once
 #include <string>
 #include <stdint.h>
-
+#include "yyUtil.h"
 
 class yyImage
 {
 public:
-    yyImage();
-    ~yyImage();
+    using Ptr = std::shared_ptr<yyImage>;
+    static Ptr create(const std::string &filename, bool flipY = false)
+    {
+        return std::make_shared<yyImage>(filename, flipY);
+    }
+    static Ptr create(uint8_t *buffer, int bufferSize, bool flipY = false)
+    {
+        return std::make_shared<yyImage>(buffer, bufferSize, flipY);
+    }
 
-    int load(const std::string &filename, bool flipY = false);
+    yyImage(const std::string &filename, bool flipY);
+    yyImage(uint8_t *buffer, int bufferSize, bool flipY);
+    ~yyImage();
 
     int getWidth()    { return width_; }
     int getHeight()   { return height_; }

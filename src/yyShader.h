@@ -43,10 +43,10 @@ public:
         glUniform1f(glGetUniformLocation(programObject_, name.c_str()), value); 
     }
     // textureUnit: 0...15
-    void setTexture(const std::string &samplerName, unsigned int textureUnit)
+    void setTextureUnit(const std::string &samplerName, unsigned int textureUnit)
     {
         if (textureUnit > 15) {
-            std::cout << "warning: textureUnit value greater than 15. " << std::endl;
+            std::cout << "[yyShader] warning: textureUnit value greater than 15. " << std::endl;
         }
         setInt(samplerName, textureUnit);  // 告诉着色器的采样器使用哪个纹理单元
     }

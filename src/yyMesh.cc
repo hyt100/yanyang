@@ -87,6 +87,7 @@ void yyMesh::draw(yyShader::Ptr &pShader, bool wireframeMode)
     {
         yyTextureType type = pTextures_[i]->getType();
         std::string name = pTextures_[i]->getName();
+        unsigned int textureId = pTextures_[i]->getId();
         std::string samplerName;
 
         if (type == yyTextureType_DIFFUSE)
@@ -103,9 +104,9 @@ void yyMesh::draw(yyShader::Ptr &pShader, bool wireframeMode)
         // active proper texture unit before binding
         glActiveTexture(GL_TEXTURE0 + i);     // 在绑定之前，激活纹理单元
         // now set the sampler to the correct texture unit
-        pShader->setTexture(samplerName, i);  // 告诉着色器的采样器使用哪个纹理单元
+        pShader->setTextureUnit(samplerName, i);  // 告诉着色器的采样器使用哪个纹理单元
         // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, pTextures_[i]->getId()); // 绑定纹理对象到激活的纹理单元 
+        glBindTexture(GL_TEXTURE_2D, textureId); // 绑定纹理对象到激活的纹理单元 
     }
 
     if (wireframeMode)

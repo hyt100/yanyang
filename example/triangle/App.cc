@@ -4,7 +4,7 @@ void App::setup()
 {
     glm::vec3 cameraPosition(0.0f, 0.0f, 2.0f);
     glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f);
-    camera_ = yyPerspectiveCamera::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
+    pCamera_ = yyPerspectiveCamera::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
     std::vector<glm::vec3> vertices = {
         glm::vec3(-0.5f, -0.5f, 0.0f),
@@ -39,7 +39,7 @@ void App::setup()
 
 void App::update()
 {
-    glm::mat4 vpMat = camera_->getViewProjectMat();
+    glm::mat4 vpMat = pCamera_->getViewProjectMat();
     mvpMat_ = vpMat * modelMat_;
 }
 
