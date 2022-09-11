@@ -28,6 +28,7 @@ void yyMesh::bulid()
     if (vertexs_.size() == 0 || indices_.size() == 0) {
         throw std::runtime_error("vertexs or indices can't be empty!");
     }
+    auto vertexsSize = vertexs_.size();
 
     glBindVertexArray(vao_);
 
@@ -40,30 +41,45 @@ void yyMesh::bulid()
     glEnableVertexAttribArray(YY_ATTR_VERTEX);
  
     if (colors_.size()) {
+        if (colors_.size() != vertexsSize) {
+            std::cout << "warning: color size abnormal" << std::endl;
+        }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_COLOR]);
         glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(glm::vec3), colors_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_COLOR);
     }
     if (normals_.size()) {
+        if (normals_.size() != vertexsSize) {
+            std::cout << "warning: normals size abnormal" << std::endl;
+        }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_NORMAL]);
         glBufferData(GL_ARRAY_BUFFER, normals_.size() * sizeof(glm::vec3), normals_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_NORMAL);
     }
     if (texCoords_.size()) {
+        if (texCoords_.size() != vertexsSize) {
+            std::cout << "warning: texCoords size abnormal" << std::endl;
+        }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_TEXCOORD]);
         glBufferData(GL_ARRAY_BUFFER, texCoords_.size() * sizeof(glm::vec2), texCoords_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_TEXCOORD);
     }
     if (tangents_.size()) {
+        if (tangents_.size() != vertexsSize) {
+            std::cout << "warning: tangents size abnormal" << std::endl;
+        }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_TANGENT]);
         glBufferData(GL_ARRAY_BUFFER, tangents_.size() * sizeof(glm::vec3), tangents_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_TANGENT);
     }
     if (bitangents_.size()) {
+        if (bitangents_.size() != vertexsSize) {
+            std::cout << "warning: bitangents size abnormal" << std::endl;
+        }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_BITANGENT]);
         glBufferData(GL_ARRAY_BUFFER, bitangents_.size() * sizeof(glm::vec3), bitangents_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_BITANGENT, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);

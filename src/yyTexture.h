@@ -10,7 +10,8 @@ enum yyImageEncoding
 
 enum yyTextureType
 {
-    yyTextureType_DIFFUSE = 0,
+    yyTextureType_NONE = 0,
+    yyTextureType_DIFFUSE,
     yyTextureType_SPECULAR,
     yyTextureType_NORMAL,
     yyTextureType_AMBIENT
@@ -36,6 +37,7 @@ public:
     unsigned int getId()    { return textureId_; }
     yyTextureType getType() { return textureType_; }
     std::string getName();
+    std::string getFilePath() { return filename_; }
 
 private:
     void init(yyImage::Ptr &pImage);

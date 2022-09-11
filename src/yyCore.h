@@ -5,6 +5,7 @@
 #include "yyMesh.h"
 #include "yyTexture.h"
 #include "yyPerspectiveCamera.h"
+#include "yyModel.h"
 
 class yyCore
 {

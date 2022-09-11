@@ -29,8 +29,8 @@ yyPerspectiveCamera::yyPerspectiveCamera(float width, float height, float fov, f
     float gammaRad = std::acos(positionSphere.z / layerRaduis);
     if (positionSphere.x < 0.0f)
         gammaRad = 2*yyPI - gammaRad;
-    gamma_ = yyRadiansToDegree(gammaRad);
-    theta_ = yyRadiansToDegree(thetaRad);
+    gamma_ = yyRad2Deg(gammaRad);
+    theta_ = yyRad2Deg(thetaRad);
 
     // 计算VP矩阵
     projectionMat_ = glm::perspective(glm::radians(fov), 1.0f * width / height, near, far);

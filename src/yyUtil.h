@@ -9,6 +9,7 @@
 #include <vector>
 #include <array>
 #include <memory>
+#include <map>
 
 #define yyPI             3.14159265359
 #define yyEPSINON        0.00001
@@ -40,7 +41,12 @@ protected:
     ~yyNoncopyable() = default;
 };
 
-inline float yyRadiansToDegree(float value)
+inline float yyRad2Deg(float value)
 {
-    return 180 * value / yyPI;
+    return 180.0f * value / yyPI;
+}
+
+inline float yyDeg2Rad(float value)
+{
+    return yyPI * value / 180.0f;
 }
