@@ -45,8 +45,8 @@ void yyMesh::bulid()
             std::cout << "warning: color size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_COLOR]);
-        glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(glm::vec3), colors_.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(YY_ATTR_COLOR, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(glm::vec4), colors_.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(YY_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_COLOR);
     }
     if (normals_.size()) {

@@ -49,7 +49,7 @@ yyMesh::Ptr yyModel::processMesh(aiMesh *mesh, const aiScene *scene)
 {
     std::vector<glm::vec3> vertexs;
     std::vector<glm::vec3> normals;
-    std::vector<glm::vec3> colors;
+    std::vector<glm::vec4> colors;
     std::vector<glm::vec2> texCoords;
     std::vector<glm::vec3> tangents;
     std::vector<glm::vec3> bitangents;
@@ -70,6 +70,10 @@ yyMesh::Ptr yyModel::processMesh(aiMesh *mesh, const aiScene *scene)
             texCoords.emplace_back(glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y));
             tangents.emplace_back(glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z));
             bitangents.emplace_back(glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z));
+        }
+
+        if (mesh->mColors[0]) {
+            colors.emplace_back(glm::vec4(mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b, mesh->mColors[0][i].a));
         }
     }
 
@@ -108,6 +112,8 @@ yyMesh::Ptr yyModel::processMesh(aiMesh *mesh, const aiScene *scene)
     pMesh->addBitangents(bitangents);
     pMesh->addTextures(pTextures);
     pMesh->bulid();
+    std::cout << "model vertex size: " << vertexs.size() << std::endl;
+    std::cout << "model texture size: " << pTextures.size() << std::endl;
     return pMesh;
 }
 

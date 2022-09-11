@@ -11,10 +11,10 @@ void App::setup()
         glm::vec3(0.5f, -0.5f, 0.0f),
         glm::vec3(0.0f,  0.5f, 0.0f)
     };
-    std::vector<glm::vec3> colors = {
-        glm::vec3(1.0f, 0.0f, 0.0f),
-        glm::vec3(0.0f, 1.0f, 0.0f),
-        glm::vec3(0.0f, 0.0f, 1.0f)
+    std::vector<glm::vec4> colors = {
+        glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
+        glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
     };
     std::vector<glm::vec2> texCoords = {
         glm::vec2(0.0f, 0.0f), 
@@ -49,7 +49,7 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
     pShader_->setMat4("mvp", mvpMat_);
-    pShader_->setBool("uUseTexture", true);
+    pShader_->setBool("uUseTexture", false);
     pMesh_->draw(pShader_, false);
     pShader_->end();
     yyShaderCheckError();

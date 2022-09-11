@@ -19,7 +19,7 @@ public:
 
     void addVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs; }
     void addNormal(const std::vector<glm::vec3> &normals)        { normals_ = normals; }
-    void addColor(const std::vector<glm::vec3> &colors)          { colors_ = colors; }
+    void addColor(const std::vector<glm::vec4> &colors)          { colors_ = colors; }
     void addTexCoords(const std::vector<glm::vec2> &texCoords)   { texCoords_ = texCoords; }
     void addTangents(const std::vector<glm::vec3> &tangents)     { tangents_ = tangents; }
     void addBitangents(const std::vector<glm::vec3> &bitangents) { bitangents_ = bitangents; }
@@ -42,7 +42,7 @@ public:
 private:
     std::vector<glm::vec3> vertexs_;
     std::vector<glm::vec3> normals_;
-    std::vector<glm::vec3> colors_;  // vertex color
+    std::vector<glm::vec4> colors_;  // vertex color
     std::vector<glm::vec2> texCoords_;
     std::vector<glm::vec3> tangents_;
     std::vector<glm::vec3> bitangents_;
