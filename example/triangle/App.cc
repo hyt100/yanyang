@@ -25,7 +25,7 @@ void App::setup()
         0, 1, 2
     };
 
-    pShader_ = yyShader::create("../example/triangle/shader.vert", "../example/triangle/shader.frag");
+    pShader_ = yyShader::create("../shader/basic.vert", "../shader/basic.frag");
     pTextures_.push_back(yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true));
 
     pMesh_ = yyMesh::create();
@@ -49,7 +49,7 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
     pShader_->setMat4("mvp", mvpMat_);
-    pShader_->setBool("uUseTexture", false);
+    pShader_->setBool("useVertexColor", true);
     pMesh_->draw(pShader_, false);
     pShader_->end();
     yyShaderCheckError();

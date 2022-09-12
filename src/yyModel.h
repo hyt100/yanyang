@@ -18,9 +18,9 @@ public:
     std::vector<yyMesh::Ptr> &getMeshs() { return pMeshs_; }
 
 private:
-    void processNode(aiNode *node, const aiScene *scene);
-    yyMesh::Ptr processMesh(aiMesh *mesh, const aiScene *scene);
-    void loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::vector<yyTexture::Ptr> &out);
+    void processNode(const aiScene *scene, aiNode *node);
+    yyMesh::Ptr processMesh(const aiScene *scene, aiMesh *mesh);
+    void loadMaterialTextures(const aiScene *scene, aiMaterial *mat, aiTextureType type, std::vector<yyTexture::Ptr> &out);
     yyTextureType convertTextureType(aiTextureType type);
 
     std::vector<yyMesh::Ptr> pMeshs_;

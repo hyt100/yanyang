@@ -25,10 +25,10 @@ yyModel::yyModel(const std::string &filename)
     directory_ = filename.substr(0, filename.find_last_of('/'));
 
     // process ASSIMP's root node recursively
-    processNode(scene->mRootNode, scene);
+    processNode(scene, scene->mRootNode);
 }
 
-void yyModel::processNode(aiNode *node, const aiScene *scene)
+void yyModel::processNode(const aiScene *scene, aiNode *node)
 {
     // process each mesh located at the current node
     for (unsigned int i = 0; i < node->mNumMeshes; i++)
@@ -36,16 +36,16 @@ void yyModel::processNode(aiNode *node, const aiScene *scene)
         // the node object only contains indices to index the actual objects in the scene. 
         // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        pMeshs_.push_back(processMesh(mesh, scene));
+        pMeshs_.push_back(processMesh(scene, mesh));
     }
     // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
     for (unsigned int i = 0; i < node->mNumChildren; i++)
     {
-        processNode(node->mChildren[i], scene);
+        processNode(scene, node->mChildren[i]);
     }
 }
 
-yyMesh::Ptr yyModel::processMesh(aiMesh *mesh, const aiScene *scene)
+yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
 {
     std::vector<glm::vec3> vertexs;
     std::vector<glm::vec3> normals;
@@ -92,13 +92,13 @@ yyMesh::Ptr yyModel::processMesh(aiMesh *mesh, const aiScene *scene)
     std::vector<yyTexture::Ptr> pTexturesSpecular;
     std::vector<yyTexture::Ptr> pTexturesNormal;
     std::vector<yyTexture::Ptr> pTexturesAmbient;
-    loadMaterialTextures(material, aiTextureType_DIFFUSE, pTexturesDiffuse);
+    loadMaterialTextures(scene, material, aiTextureType_DIFFUSE, pTexturesDiffuse);
     pTextures.insert(pTextures.end(), pTexturesDiffuse.begin(), pTexturesDiffuse.end());
-    loadMaterialTextures(material, aiTextureType_SPECULAR, pTexturesSpecular);
+    loadMaterialTextures(scene, material, aiTextureType_SPECULAR, pTexturesSpecular);
     pTextures.insert(pTextures.end(), pTexturesSpecular.begin(), pTexturesSpecular.end());
-    loadMaterialTextures(material, aiTextureType_NORMALS, pTexturesNormal);
+    loadMaterialTextures(scene, material, aiTextureType_NORMALS, pTexturesNormal);
     pTextures.insert(pTextures.end(), pTexturesNormal.begin(), pTexturesNormal.end());
-    loadMaterialTextures(material, aiTextureType_AMBIENT, pTexturesAmbient);
+    loadMaterialTextures(scene, material, aiTextureType_AMBIENT, pTexturesAmbient);
     pTextures.insert(pTextures.end(), pTexturesAmbient.begin(), pTexturesAmbient.end());
 
     // create and build mesh
@@ -125,13 +125,29 @@ yyTextureType yyModel::convertTextureType(aiTextureType type)
         return yyTextureType_NONE;
 }
 
-void yyModel::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::vector<yyTexture::Ptr> &out)
+void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, aiTextureType type, std::vector<yyTexture::Ptr> &out)
 {
     out.clear();
-    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
     {
         aiString str;
-        mat->GetTexture(type, i, &str);
+        material->GetTexture(type, i, &str);
+
+#if 0  //支持内置材质
+        auto embededTextrure = scene->GetEmbeddedTexture(str.C_Str());
+        if (embededTextrure) {
+            // 如果mHeight为0，则pcData中存储了压缩格式像素，mWidth指定数据大小;
+            // 如果mHeight不为0，则pcData中存储了ARGB8888格式像素，mWidth * mHeight指定像素数据大小
+            if (embededTextrure->mHeight == 0) {
+                auto pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth, 
+                                convertTextureType(type), false, yyImageEncodingLinear);
+            } else {
+                //TODO
+            }
+            continue;
+        }
+#endif
+
         std::string filename = directory_ + "/" + str.C_Str();
         bool skip = false;
 
