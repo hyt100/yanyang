@@ -29,11 +29,11 @@ void App::setup()
     pTextures_.push_back(yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true));
 
     pMesh_ = yyMesh::create();
-    pMesh_->addVertex(vertices);
-    pMesh_->addIndices(indices);
-    pMesh_->addColor(colors);
-    pMesh_->addTexCoords(texCoords);
-    pMesh_->addTextures(pTextures_);
+    pMesh_->setAttrVertex(vertices);
+    pMesh_->setAttrIndice(indices);
+    pMesh_->setAttrColor(colors);
+    pMesh_->setAttrTexCoord(texCoords);
+    pMesh_->setTextures(pTextures_);
     pMesh_->bulid();
 }
 

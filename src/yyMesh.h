@@ -18,24 +18,24 @@ public:
     yyMesh();
     ~yyMesh();
 
-    void addVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs; }
-    void addNormal(const std::vector<glm::vec3> &normals)        { normals_ = normals; }
-    void addColor(const std::vector<glm::vec4> &colors)          { colors_ = colors; }
-    void addTexCoords(const std::vector<glm::vec2> &texCoords)   { texCoords_ = texCoords; }
-    void addTangents(const std::vector<glm::vec3> &tangents)     { tangents_ = tangents; }
-    void addBitangents(const std::vector<glm::vec3> &bitangents) { bitangents_ = bitangents; }
-    void addIndices(const std::vector<unsigned int> &indices)    { indices_ = indices; }
-    void addBoneIDs(const std::vector<int> &boneIDs)
+    void setAttrVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs; }
+    void setAttrNormal(const std::vector<glm::vec3> &normals)        { normals_ = normals; }
+    void setAttrColor(const std::vector<glm::vec4> &colors)          { colors_ = colors; }
+    void setAttrTexCoord(const std::vector<glm::vec2> &texCoords)   { texCoords_ = texCoords; }
+    void setAttrTangent(const std::vector<glm::vec3> &tangents)     { tangents_ = tangents; }
+    void setAttrBitangent(const std::vector<glm::vec3> &bitangents) { bitangents_ = bitangents; }
+    void setAttrIndice(const std::vector<unsigned int> &indices)    { indices_ = indices; }
+    void setAttrBoneID(const std::vector<int> &boneIDs)
     {
         if (boneIDs.size() == yyMAX_BONE_INFLUENCE)
             boneIDs_ = boneIDs;
     }
-    void addBoneWeights(const std::vector<float> &boneWeights)
+    void setAttrBoneWeight(const std::vector<float> &boneWeights)
     {
         if (boneWeights.size() == yyMAX_BONE_INFLUENCE)
             boneWeights_ = boneWeights;
     }
-    void addTextures(std::vector<yyTexture::Ptr> &pTextures) { pTextures_ = pTextures; }
+    void setTextures(std::vector<yyTexture::Ptr> &pTextures) { pTextures_ = pTextures; }
 
     void bulid();
 
@@ -43,11 +43,12 @@ public:
     void setRotation(float degree, const glm::vec3 &axis);
     void setTranslation(const glm::vec3 &position);
     void setModelMatrix(const glm::mat4 &mat);
-    void updateMatrix();
 
     void draw(const yyCamera &camera, yyShader &pShader, bool wireframeMode = false);
 
 private:
+    void updateMatrix();
+
     std::vector<glm::vec3> vertexs_;
     std::vector<glm::vec3> normals_;
     std::vector<glm::vec4> colors_;  // vertex color

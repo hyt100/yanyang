@@ -103,14 +103,14 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
 
     // create and build mesh
     auto pMesh = yyMesh::create();
-    pMesh->addIndices(indices);
-    pMesh->addVertex(vertexs);
-    pMesh->addNormal(normals);
-    pMesh->addColor(colors);
-    pMesh->addTexCoords(texCoords);
-    pMesh->addTangents(tangents);
-    pMesh->addBitangents(bitangents);
-    pMesh->addTextures(pTextures);
+    pMesh->setAttrIndice(indices);
+    pMesh->setAttrVertex(vertexs);
+    pMesh->setAttrNormal(normals);
+    pMesh->setAttrColor(colors);
+    pMesh->setAttrTexCoord(texCoords);
+    pMesh->setAttrTangent(tangents);
+    pMesh->setAttrBitangent(bitangents);
+    pMesh->setTextures(pTextures);
     pMesh->bulid();
     std::cout << "model vertex size: " << vertexs.size() << std::endl;
     std::cout << "model texture size: " << pTextures.size() << std::endl;

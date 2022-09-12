@@ -5,7 +5,7 @@ layout (location = 1) in vec4 vColor;
 layout (location = 3) in vec2 vUv;
 
 uniform mat4 mvpMat;
-uniform mat4 normalMat;
+uniform mat3 normalMat;
 
 out vec4 fColor;
 out vec2 fUv;

@@ -135,9 +135,9 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
     updateMatrix();
     glm::mat4 mvpMat = camera.viewProjectionMat_ * modelMat_;
     glm::mat4 mvMat = camera.viewMat_ * modelMat_;
-    glm::mat4 normalMat = glm::transpose(glm::inverse(mvMat));
+    glm::mat3 normalMat = glm::mat3(glm::transpose(glm::inverse(mvMat)));  // remove translation component
     shader.setMat4("mvpMat", mvpMat);
-    shader.setMat4("normalMat", normalMat);
+    shader.setMat3("normalMat", normalMat);
 
     // bind appropriate textures
     unsigned int diffuseNr  = 0;
