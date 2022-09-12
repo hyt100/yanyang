@@ -129,13 +129,15 @@ void yyMesh::updateMatrix()
     }
 }
 
-void yyMesh::draw(const yyCamera &camera, yyShader::Ptr &pShader, bool wireframeMode)
+void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
 {
     // calculate MVP
     updateMatrix();
-    glm::mat4 mvp = camera.viewProjectionMat_ * modelMat_;
-    glm::mat4 mv = camera.viewMat_ * modelMat_;
-    pShader->setMat4("mvp", mvp);
+    glm::mat4 mvpMat = camera.viewProjectionMat_ * modelMat_;
+    glm::mat4 mvMat = camera.viewMat_ * modelMat_;
+    glm::mat4 normalMat = glm::transpose(glm::inverse(mvMat));
+    shader.setMat4("mvpMat", mvpMat);
+    shader.setMat4("normalMat", normalMat);
 
     // bind appropriate textures
     unsigned int diffuseNr  = 0;
@@ -161,9 +163,9 @@ void yyMesh::draw(const yyCamera &camera, yyShader::Ptr &pShader, bool wireframe
             samplerName = name;
 
         // active proper texture unit before binding
-        glActiveTexture(GL_TEXTURE0 + i);     // 在绑定之前，激活纹理单元
+        glActiveTexture(GL_TEXTURE0 + i);        // 在绑定之前，激活纹理单元
         // now set the sampler to the correct texture unit
-        pShader->setTextureUnit(samplerName, i);  // 告诉着色器的采样器使用哪个纹理单元
+        shader.setTextureUnit(samplerName, i);   // 告诉着色器的采样器使用哪个纹理单元
         // and finally bind the texture
         glBindTexture(GL_TEXTURE_2D, textureId); // 绑定纹理对象到激活的纹理单元 
     }

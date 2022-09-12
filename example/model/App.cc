@@ -9,8 +9,9 @@ void App::setup()
     pShader_ = yyShader::create("../shader/basic.vert", "../shader/basic.frag");
 
     // pModel_ = yyModel::create("../assets/nanosuit/nanosuit.obj");
-    pModel_ = yyModel::create("../assets/cube.obj");
-    pModel_->setScale(glm::vec3(8.0f, 8.0f, 8.0f));
+    // pModel_ = yyModel::create("../assets/cube.obj");
+    // pModel_->setScale(glm::vec3(8.0f, 8.0f, 8.0f));
+    pModel_ = yyModel::create("../assets/shield/shield.ply");
 }
 
 void App::update()
@@ -23,8 +24,8 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     for (auto &pMesh: pModel_->getMeshs()) {
         pShader_->begin();
-        pShader_->setInt("useVertexColor", true);
-        pMesh->draw(*pCamera_, pShader_, false);
+        pShader_->setInt("useVertexColor", false);
+        pMesh->draw(*pCamera_, *pShader_, false);
         pShader_->end();
     }
     yyShaderCheckError();

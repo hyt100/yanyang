@@ -45,7 +45,7 @@ public:
     void setModelMatrix(const glm::mat4 &mat);
     void updateMatrix();
 
-    void draw(const yyCamera &camera, yyShader::Ptr &pShader, bool wireframeMode = false);
+    void draw(const yyCamera &camera, yyShader &pShader, bool wireframeMode = false);
 
 private:
     std::vector<glm::vec3> vertexs_;

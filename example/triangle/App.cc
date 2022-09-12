@@ -47,7 +47,7 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
     pShader_->setBool("useVertexColor", true);
-    pMesh_->draw(*pCamera_, pShader_, false);
+    pMesh_->draw(*pCamera_, *pShader_, false);
     pShader_->end();
     yyShaderCheckError();
 }
