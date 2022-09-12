@@ -17,6 +17,9 @@ yyMesh::yyMesh()
 
     needUpdateMat_ = false;
     modelMat_ = glm::mat4(1.0f);
+    modelMatScale_ = glm::mat4(1.0f);
+    modelMatRotate_ = glm::mat4(1.0f);
+    modelMatTranslate_ = glm::mat4(1.0f);
 }
 
 yyMesh::~yyMesh()

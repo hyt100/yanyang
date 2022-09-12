@@ -10,6 +10,7 @@ void App::setup()
 
     // pModel_ = yyModel::create("../assets/nanosuit/nanosuit.obj");
     pModel_ = yyModel::create("../assets/cube.obj");
+    pModel_->setScale(glm::vec3(8.0f, 8.0f, 8.0f));
 }
 
 void App::update()
