@@ -14,8 +14,6 @@ void App::setup()
 
 void App::update()
 {
-    glm::mat4 vpMat = pCamera_->getViewProjectMat();
-    mvpMat_ = vpMat * modelMat_;
 }
 
 void App::draw()
@@ -24,9 +22,8 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     for (auto &pMesh: pModel_->getMeshs()) {
         pShader_->begin();
-        pShader_->setMat4("mvp", mvpMat_);
         pShader_->setInt("useVertexColor", true);
-        pMesh->draw(pShader_);
+        pMesh->draw(*pCamera_, pShader_, false);
         pShader_->end();
     }
     yyShaderCheckError();

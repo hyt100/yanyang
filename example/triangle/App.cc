@@ -39,8 +39,6 @@ void App::setup()
 
 void App::update()
 {
-    glm::mat4 vpMat = pCamera_->getViewProjectMat();
-    mvpMat_ = vpMat * modelMat_;
 }
 
 void App::draw()
@@ -48,9 +46,8 @@ void App::draw()
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
-    pShader_->setMat4("mvp", mvpMat_);
     pShader_->setBool("useVertexColor", true);
-    pMesh_->draw(pShader_, false);
+    pMesh_->draw(*pCamera_, pShader_, false);
     pShader_->end();
     yyShaderCheckError();
 }

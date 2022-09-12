@@ -17,6 +17,12 @@ public:
     ~yyModel() {}
     std::vector<yyMesh::Ptr> &getMeshs() { return pMeshs_; }
 
+    void setScale(const glm::vec3 &scale)                 { for (auto &pMesh: pMeshs_) pMesh->setScale(scale); }
+    void setRotation(float degree, const glm::vec3 &axis) { for (auto &pMesh: pMeshs_) pMesh->setRotation(degree, axis); }
+    void setTranslation(const glm::vec3 &position)        { for (auto &pMesh: pMeshs_) pMesh->setTranslation(position); }
+    void setModelMatrix(const glm::mat4 &mat)             { for (auto &pMesh: pMeshs_) pMesh->setModelMatrix(mat); }
+    void updateMatrix()                                   { for (auto &pMesh: pMeshs_) pMesh->updateMatrix(); }
+
 private:
     void processNode(const aiScene *scene, aiNode *node);
     yyMesh::Ptr processMesh(const aiScene *scene, aiMesh *mesh);

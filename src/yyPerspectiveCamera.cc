@@ -17,6 +17,7 @@ yyPerspectiveCamera::yyPerspectiveCamera(float width, float height, float fov, f
         std::cout << "Y axis, use bias." << std::endl;
         target_ += glm::vec3(0.01f, 0.01f, 0.01f);
     }
+    // target被用作旋转中心点 (实现了OrbitControl)
     positionSphere = position_ - target_;
     R_ = glm::length(target_ - position_);
     R_Min_  = R_ * 0.1f;

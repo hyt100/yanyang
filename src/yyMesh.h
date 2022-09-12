@@ -2,6 +2,7 @@
 #include "yyUtil.h"
 #include "yyTexture.h"
 #include "yyShader.h"
+#include "yyCamera.h"
 
 #define yyMAX_BONE_INFLUENCE 4
 
@@ -37,7 +38,14 @@ public:
     void addTextures(std::vector<yyTexture::Ptr> &pTextures) { pTextures_ = pTextures; }
 
     void bulid();
-    void draw(yyShader::Ptr &pShader, bool wireframeMode = false);
+
+    void setScale(const glm::vec3 &scale);
+    void setRotation(float degree, const glm::vec3 &axis);
+    void setTranslation(const glm::vec3 &position);
+    void setModelMatrix(const glm::mat4 &mat);
+    void updateMatrix();
+
+    void draw(const yyCamera &camera, yyShader::Ptr &pShader, bool wireframeMode = false);
 
 private:
     std::vector<glm::vec3> vertexs_;
@@ -53,4 +61,10 @@ private:
     unsigned int ebo_;
     std::vector<unsigned int> vbos_;
     std::vector<yyTexture::Ptr> pTextures_;
+
+    bool needUpdateMat_;
+    glm::mat4 modelMat_;
+    glm::mat4 modelMatScale_;
+    glm::mat4 modelMatRotate_;
+    glm::mat4 modelMatTranslate_;
 };

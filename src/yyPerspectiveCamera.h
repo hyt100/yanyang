@@ -1,8 +1,9 @@
 #pragma once
 #include "yyUtil.h"
+#include "yyCamera.h"
 #include <memory>
 
-class yyPerspectiveCamera
+class yyPerspectiveCamera: public yyCamera
 {
 public:
     using Ptr = std::shared_ptr<yyPerspectiveCamera>;
@@ -14,13 +15,7 @@ public:
     ~yyPerspectiveCamera() = default;
 
     void keyprocess(yyEvent event);
-    glm::vec3 getPosition() { return position_; }
-    glm::vec3 getTarget()   { return target_; }
-    glm::vec3 getUp()       { return up_; }
-    glm::mat4 getProjectMat()     { return projectionMat_; }
-    glm::mat4 getViewMat()        { return viewMat_; }
-    glm::mat4 getViewProjectMat() { return viewProjectionMat_; }
-
+    
 private:
     void update();
 
@@ -35,10 +30,4 @@ private:
     float R_;     // 由上而下构建球体（右手坐标系，Y轴正方向为上，Y轴负方向为下）
     float theta_; // theta为球体上当前位置向量与+Y轴的夹角，取值0-180
     float gamma_; // gama为圆周上当前位置向量与+Z轴的逆时针方向夹角，取值0-360
-    glm::mat4 projectionMat_;
-    glm::mat4 viewMat_;
-    glm::mat4 viewProjectionMat_;
-    glm::vec3 position_; // 相机在世界坐标系中的位置信息
-    glm::vec3 target_;   // 相机注视点，同时target也被用作旋转中心点 (实现了OrbitControl)
-    glm::vec3 up_;       // 相机up方向向量(归一化)
 };

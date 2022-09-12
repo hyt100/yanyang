@@ -14,6 +14,9 @@ yyMesh::yyMesh()
     glGenBuffers(1, &ebo_);
     vbos_.resize(YY_ATTR_MAX);
     glGenBuffers(vbos_.size(), vbos_.data());
+
+    needUpdateMat_ = false;
+    modelMat_ = glm::mat4(1.0f);
 }
 
 yyMesh::~yyMesh()
@@ -92,8 +95,45 @@ void yyMesh::bulid()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void yyMesh::draw(yyShader::Ptr &pShader, bool wireframeMode)
+void yyMesh::setScale(const glm::vec3 &scale)
 {
+    needUpdateMat_ = true;
+    modelMatScale_ = glm::scale(glm::mat4(1.0f), scale);
+}
+
+void yyMesh::setRotation(float degree, const glm::vec3 &axis)
+{
+    needUpdateMat_ = true;
+    modelMatRotate_ = glm::rotate(glm::mat4(1.0f), glm::radians(degree), axis);
+}
+
+void yyMesh::setTranslation(const glm::vec3 &position)
+{
+    needUpdateMat_ = true;
+    modelMatTranslate_ = glm::translate(glm::mat4(1.0f), position);
+}
+
+void yyMesh::setModelMatrix(const glm::mat4 &mat)
+{
+    needUpdateMat_ = false;
+    modelMat_ = mat;
+}
+
+void yyMesh::updateMatrix()
+{
+    if (needUpdateMat_) {
+        modelMat_ = modelMatTranslate_ * modelMatRotate_ * modelMatScale_;
+    }
+}
+
+void yyMesh::draw(const yyCamera &camera, yyShader::Ptr &pShader, bool wireframeMode)
+{
+    // calculate MVP
+    updateMatrix();
+    glm::mat4 mvp = camera.viewProjectionMat_ * modelMat_;
+    glm::mat4 mv = camera.viewMat_ * modelMat_;
+    pShader->setMat4("mvp", mvp);
+
     // bind appropriate textures
     unsigned int diffuseNr  = 0;
     unsigned int specularNr = 0;
@@ -137,5 +177,3 @@ void yyMesh::draw(yyShader::Ptr &pShader, bool wireframeMode)
     // always good practice to set everything back to defaults once configured.
     glActiveTexture(GL_TEXTURE0);
 }
-
-
