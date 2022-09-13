@@ -50,3 +50,15 @@ inline float yyDeg2Rad(float value)
 {
     return yyPI * value / 180.0f;
 }
+
+inline glm::vec3 yyTransformPoint(const glm::mat4 &mat, const glm::vec3 &p)
+{
+    glm::vec4 p_homo = glm::vec4(p.x, p.y, p.z, 1.0f);
+    return glm::vec3(mat * p_homo);
+}
+
+inline glm::vec3 yyTransformDirection(const glm::mat4 &mat, const glm::vec3 &p)
+{
+    glm::vec4 p_homo = glm::vec4(p.x, p.y, p.z, 0.0f);
+    return glm::vec3(mat * p_homo);
+}

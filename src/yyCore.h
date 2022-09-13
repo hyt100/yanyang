@@ -6,6 +6,7 @@
 #include "yyTexture.h"
 #include "yyPerspectiveCamera.h"
 #include "yyModel.h"
+#include "yyPointLight.h"
 
 class yyCore
 {
