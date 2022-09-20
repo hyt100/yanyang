@@ -16,10 +16,12 @@ void App::setup()
         pMesh->setTextures(pTextures);
     }
 
+    ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
+    ambientLight_.intensity = 1.0f;
+
     pointLight_.position = glm::vec3(0.0f, 1.0f, 1.5f);
-    pointLight_.ambient  = glm::vec3(0.2f, 0.2f, 0.2f);
-    pointLight_.diffuse  = glm::vec3(0.5f, 0.5f, 0.5f);
-    pointLight_.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+    pointLight_.color = glm::vec3(1.0f, 1.0f, 1.0f);
+    pointLight_.intensity = 1.0f;
     pointLight_.constant = 1.0f;
     pointLight_.linear = 0.09f;
     pointLight_.quadratic = 0.032f;
@@ -41,9 +43,8 @@ void App::draw()
 
         // light properties
         pShader_->setVec3("light.position", yyTransformPoint(pCamera_->viewMat_, pointLight_.position));
-        pShader_->setVec3("light.ambient", pointLight_.ambient);
-        pShader_->setVec3("light.diffuse", pointLight_.diffuse);
-        pShader_->setVec3("light.specular", pointLight_.specular);
+        pShader_->setVec3("light.color_ambient", ambientLight_.color * ambientLight_.intensity);
+        pShader_->setVec3("light.color", pointLight_.color * pointLight_.intensity);
         pShader_->setFloat("light.constant", pointLight_.constant);
         pShader_->setFloat("light.linear", pointLight_.linear);
         pShader_->setFloat("light.quadratic", pointLight_.quadratic);
