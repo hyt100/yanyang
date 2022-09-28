@@ -12,10 +12,9 @@ public:
     using Ptr = std::shared_ptr<yyMesh>;
     static Ptr create()
     {
-        return std::make_shared<yyMesh>();
+        // return std::make_shared<yyMesh>();
+        return Ptr(new yyMesh());
     }
-
-    yyMesh();
     ~yyMesh();
 
     void setAttrVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs; }
@@ -46,6 +45,8 @@ public:
 
     void draw(const yyCamera &camera, yyShader &pShader, bool wireframeMode = false);
 
+private:
+    yyMesh();
 private:
     void updateMatrix();
 

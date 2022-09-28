@@ -21,7 +21,9 @@ public:
 private:
     yyPerspectiveCamera::Ptr pCamera_;
     yyShader::Ptr pShader_;
+    yyShader::Ptr pShaderCubemap_;
     yyModel::Ptr pModel_;
+    yySkybox::Ptr pSkybox_;
     yyAmbientLight ambientLight_;
     yyPointLight pointLight_;
 };

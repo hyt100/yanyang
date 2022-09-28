@@ -7,6 +7,7 @@
 #include "yyPerspectiveCamera.h"
 #include "yyModel.h"
 #include "yyLight.h"
+#include "yySkybox.h"
 
 class yyCore
 {

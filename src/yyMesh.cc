@@ -146,6 +146,7 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
     unsigned int specularNr = 0;
     unsigned int normalNr   = 0;
     unsigned int ambientNr  = 0;
+    unsigned int cubemapNr  = 0;
     for (unsigned int i = 0; i < pTextures_.size(); ++i)
     {
         yyTextureType type = pTextures_[i]->getType();
@@ -161,6 +162,8 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
             samplerName = name + std::to_string(normalNr++);
         else if (type == yyTextureType_AMBIENT)
             samplerName = name + std::to_string(ambientNr++);
+        else if (type == yyTextureType_CUBEMAP)
+            samplerName = name + std::to_string(cubemapNr++);
         else
             samplerName = name;
 
@@ -168,8 +171,11 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
         glActiveTexture(GL_TEXTURE0 + i);        // 在绑定之前，激活纹理单元
         // now set the sampler to the correct texture unit
         shader.setTextureUnit(samplerName, i);   // 告诉着色器的采样器使用哪个纹理单元
-        // and finally bind the texture
-        glBindTexture(GL_TEXTURE_2D, textureId); // 绑定纹理对象到激活的纹理单元 
+        // and finally bind the texture 绑定纹理对象到激活的纹理单元 
+        if (type == yyTextureType_CUBEMAP)
+            glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
+        else
+            glBindTexture(GL_TEXTURE_2D, textureId);
     }
 
     if (wireframeMode)

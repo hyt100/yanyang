@@ -8,10 +8,10 @@ public:
     using Ptr = std::shared_ptr<yyShader>;
     static Ptr create(const std::string &vertexShaderFile, const std::string &fragmentShaderFile)
     {
-        return std::make_shared<yyShader>(vertexShaderFile, fragmentShaderFile);
+        // return std::make_shared<yyShader>(vertexShaderFile, fragmentShaderFile);
+        return Ptr(new yyShader(vertexShaderFile, fragmentShaderFile));
     }
 
-    yyShader(const std::string &vertexShaderFile, const std::string &fragmentShaderFile);
     ~yyShader()
     {
         if (programObject_)
@@ -57,6 +57,8 @@ public:
 
     static GLenum checkError(const char *file, int line);
 
+private:
+    yyShader(const std::string &vertexShaderFile, const std::string &fragmentShaderFile);
 private:
     unsigned int programObject_;  //handle to a progream object
 };

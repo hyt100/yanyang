@@ -10,10 +10,10 @@ public:
     using Ptr = std::shared_ptr<yyModel>;
     static Ptr create(const std::string &filename)
     {
-        return std::make_shared<yyModel>(filename);
+        // return std::make_shared<yyModel>(filename);
+        return Ptr(new yyModel(filename));
     }
 
-    yyModel(const std::string &filename);
     ~yyModel() {}
     std::vector<yyMesh::Ptr> &getMeshs() { return pMeshs_; }
 
@@ -22,6 +22,8 @@ public:
     void setTranslation(const glm::vec3 &position)        { for (auto &pMesh: pMeshs_) pMesh->setTranslation(position); }
     void setModelMatrix(const glm::mat4 &mat)             { for (auto &pMesh: pMeshs_) pMesh->setModelMatrix(mat); }
 
+private:
+    yyModel(const std::string &filename);
 private:
     void processNode(const aiScene *scene, aiNode *node);
     yyMesh::Ptr processMesh(const aiScene *scene, aiMesh *mesh);

@@ -9,15 +9,14 @@ public:
     using Ptr = std::shared_ptr<yyImage>;
     static Ptr create(const std::string &filename, bool flipY = false)
     {
-        return std::make_shared<yyImage>(filename, flipY);
+        // return std::make_shared<yyImage>(filename, flipY);
+        return Ptr(new yyImage(filename, flipY));
     }
     static Ptr create(uint8_t *buffer, int bufferSize, bool flipY = false)
     {
-        return std::make_shared<yyImage>(buffer, bufferSize, flipY);
+        // return std::make_shared<yyImage>(buffer, bufferSize, flipY);
+        return Ptr(new yyImage(buffer, bufferSize, flipY));
     }
-
-    yyImage(const std::string &filename, bool flipY);
-    yyImage(uint8_t *buffer, int bufferSize, bool flipY);
     ~yyImage();
 
     int getWidth()    { return width_; }
@@ -25,6 +24,9 @@ public:
     int getChannel()  { return channels_; }
     uint8_t* data()   { return data_; }
 
+private:
+    yyImage(const std::string &filename, bool flipY);
+    yyImage(uint8_t *buffer, int bufferSize, bool flipY);
 private:
     uint8_t *data_;
     int width_;

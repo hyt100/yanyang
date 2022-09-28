@@ -9,13 +9,15 @@ public:
     using Ptr = std::shared_ptr<yyPerspectiveCamera>;
     static Ptr create(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target)
     {
-        return std::make_shared<yyPerspectiveCamera>(width, height, fov, near, far, position, target);
+        // return std::make_shared<yyPerspectiveCamera>(width, height, fov, near, far, position, target);
+        return Ptr(new yyPerspectiveCamera(width, height, fov, near, far, position, target));
     }
-    yyPerspectiveCamera(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target);
     ~yyPerspectiveCamera() = default;
 
     void keyprocess(yyEvent event);
     
+private:
+    yyPerspectiveCamera(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target);
 private:
     void update();
 
