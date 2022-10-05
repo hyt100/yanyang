@@ -90,8 +90,8 @@ yyTexture::yyTexture(const std::vector<std::string> &cubemapFilenames, yyImageEn
     //     GL_TEXTURE_CUBE_MAP_NEGATIVE_X	左
     //     GL_TEXTURE_CUBE_MAP_POSITIVE_Y	上
     //     GL_TEXTURE_CUBE_MAP_NEGATIVE_Y	下
-    //     GL_TEXTURE_CUBE_MAP_POSITIVE_Z	后
-    //     GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	前
+    //     GL_TEXTURE_CUBE_MAP_POSITIVE_Z	前
+    //     GL_TEXTURE_CUBE_MAP_NEGATIVE_Z	后
     for (int i = 0; i < 6; ++i) {
         glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, pImages[i]->data());
     }

@@ -48,24 +48,24 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    // for (auto &pMesh: pModel_->getMeshs()) {
-    //     pShader_->begin();
-    //     pShader_->setInt("useVertexColor", false);
+    for (auto &pMesh: pModel_->getMeshs()) {
+        pShader_->begin();
+        pShader_->setInt("useVertexColor", false);
 
-    //     // light properties
-    //     pShader_->setVec3("light.position", yyTransformPoint(pCamera_->viewMat_, pointLight_.position));
-    //     pShader_->setVec3("light.color_ambient", ambientLight_.color * ambientLight_.intensity);
-    //     pShader_->setVec3("light.color", pointLight_.color * pointLight_.intensity);
-    //     pShader_->setFloat("light.constant", pointLight_.constant);
-    //     pShader_->setFloat("light.linear", pointLight_.linear);
-    //     pShader_->setFloat("light.quadratic", pointLight_.quadratic);
+        // light properties
+        pShader_->setVec3("light.position", yyTransformPoint(pCamera_->viewMat_, pointLight_.position));
+        pShader_->setVec3("light.color_ambient", ambientLight_.color * ambientLight_.intensity);
+        pShader_->setVec3("light.color", pointLight_.color * pointLight_.intensity);
+        pShader_->setFloat("light.constant", pointLight_.constant);
+        pShader_->setFloat("light.linear", pointLight_.linear);
+        pShader_->setFloat("light.quadratic", pointLight_.quadratic);
 
-    //     // material properties
-    //     pShader_->setFloat("material.shininess", 128.0f);
+        // material properties
+        pShader_->setFloat("material.shininess", 128.0f);
 
-    //     pMesh->draw(*pCamera_, *pShader_, false);
-    //     pShader_->end();
-    // }
+        pMesh->draw(*pCamera_, *pShader_, false);
+        pShader_->end();
+    }
     pSkybox_->setTranslation(pCamera_->position_);
     pSkybox_->draw(*pCamera_, *pShaderCubemap_, false);
     yyShaderCheckError();
