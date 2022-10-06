@@ -176,6 +176,8 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
         else
             samplerName = name;
 
+        // std::cout << "active texture: " << samplerName << std::endl;
+
         // active proper texture unit before binding
         glActiveTexture(GL_TEXTURE0 + i);        // 在绑定之前，激活纹理单元
         // now set the sampler to the correct texture unit

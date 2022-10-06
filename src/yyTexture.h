@@ -36,7 +36,7 @@ public:
     {
         return Ptr(new yyTexture(cubemapFilenames, encoding));
     }
-    static Ptr create(unsigned int width, unsigned int height, unsigned int channels = 3)
+    static Ptr create(unsigned int width, unsigned int height, unsigned int channels)
     {
         return Ptr(new yyTexture(width, height, channels));
     }

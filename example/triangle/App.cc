@@ -12,9 +12,9 @@ void App::setup()
     pShader_ = yyShader::create("../shader/basic.vert", "../shader/basic.frag");
     pShader_->setBool("useVertexColor", false);
 
-    pShaderEffective_ = yyShader::create("../shader/effective.vert", "../shader/effective_inversion.frag");
-    pShaderEffective_->setInt("width", yyFrambuffWidth);
-    pShaderEffective_->setInt("height", yyFrambuffHeight);
+    pShaderEffective_ = yyShader::create("../shader/effective.vert", "../shader/effective.frag");
+    // pShaderEffective_->setInt("width", yyFrambuffWidth);
+    // pShaderEffective_->setInt("height", yyFrambuffHeight);
 
     pPlane_ = yyMeshPlane::create(1.0f, 1.0f);
 }
