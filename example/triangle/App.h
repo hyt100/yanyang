@@ -21,6 +21,8 @@ public:
 private:
     yyPerspectiveCamera::Ptr pCamera_;
     yyShader::Ptr pShader_;
-    std::vector<yyTexture::Ptr> pTextures_;
-    yyMesh::Ptr pMesh_;
+    yyShader::Ptr pShaderEffective_;
+    yyTexture::Ptr pTexture_;
+    yyMeshPlane::Ptr pPlane_;
+    yyPostProcess::Ptr pPostProcess_;
 };

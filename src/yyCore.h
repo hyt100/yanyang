@@ -8,6 +8,9 @@
 #include "yyModel.h"
 #include "yyLight.h"
 #include "yySkybox.h"
+#include "yyPostProcess.h"
+#include "yyMeshPlane.h"
+#include "yyMeshBox.h"
 
 class yyCore
 {

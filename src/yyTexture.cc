@@ -99,6 +99,31 @@ yyTexture::yyTexture(const std::vector<std::string> &cubemapFilenames, yyImageEn
     glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
+// 创建纹理, 仅分配了内存而没有填充它
+yyTexture::yyTexture(unsigned int width, unsigned int height, unsigned int channels)
+{
+    filename_ = "";
+    encoding_ = yyImageEncodingLinear;
+    textureType_ = yyTextureType_NONE;
+
+    GLenum format;
+    if (channels == 1)
+        format = GL_RED;
+    else if (channels == 3)
+        format = GL_RGB;
+    else
+        format = GL_RGBA;
+    
+    glGenTextures(1, &textureId_);
+    glBindTexture(GL_TEXTURE_2D, textureId_);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 yyTexture::~yyTexture()
 {
     if (textureId_ != 0) {
@@ -114,6 +139,7 @@ std::string yyTexture::getName()
         case yyTextureType_NORMAL:    return "texture_normal";
         case yyTextureType_AMBIENT:   return "texture_ambient";
         case yyTextureType_CUBEMAP:   return "texture_cubemap";
+        case yyTextureType_NONE:      return "texture_none";
         default:                      return "texture_unknow";
     }
 }

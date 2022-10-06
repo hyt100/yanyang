@@ -1,5 +1,6 @@
 #pragma once
 #include "yyUtil.h"
+#include "yyTexture.h"
 
 class yyOffScreenBuffer
 {
@@ -9,9 +10,10 @@ public:
     {
         return Ptr(new yyOffScreenBuffer(width, height, channels));
     }
-    ~yyOffScreenBuffer() = default;
+    ~yyOffScreenBuffer();
 
-    unsigned int getTextureId()    { return textureId_; }
+    // unsigned int getTextureId()    { return textureId_; }
+    yyTexture::Ptr getTexture()       { return pTexture_; }
     void bind();
     void unbind();
 
@@ -22,8 +24,9 @@ private:
     unsigned int height_;
     unsigned int channels_;
     unsigned int framebuffer_;
-    unsigned int textureId_; // color attachment texture
-    unsigned int rbo_;       // renderbuffer object for depth and stencil attachment
+    // unsigned int textureId_; // color attachment texture
+    yyTexture::Ptr pTexture_;   // color attachment texture
+    unsigned int rbo_;          // renderbuffer object for depth and stencil attachment
     GLint backupFramebuffer_;
     GLint backupViewport_[4];
-}；
+};

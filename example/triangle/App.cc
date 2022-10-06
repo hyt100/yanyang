@@ -6,35 +6,14 @@ void App::setup()
     glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f);
     pCamera_ = yyPerspectiveCamera::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
-    std::vector<glm::vec3> vertices = {
-        glm::vec3(-0.5f, -0.5f, 0.0f),
-        glm::vec3(0.5f, -0.5f, 0.0f),
-        glm::vec3(0.0f,  0.5f, 0.0f)
-    };
-    std::vector<glm::vec4> colors = {
-        glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
-        glm::vec4(0.0f, 1.0f, 0.0f, 1.0f),
-        glm::vec4(0.0f, 0.0f, 1.0f, 1.0f)
-    };
-    std::vector<glm::vec2> texCoords = {
-        glm::vec2(0.0f, 0.0f), 
-        glm::vec2(1.0f, 0.0f),
-        glm::vec2(0.0f, 1.0f)
-    };
-    std::vector<unsigned int> indices = {
-        0, 1, 2
-    };
+    pPostProcess_ = yyPostProcess::create(yyFrambuffWidth, yyFrambuffHeight);
+    pTexture_ = yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true);
 
     pShader_ = yyShader::create("../shader/basic.vert", "../shader/basic.frag");
-    pTextures_.push_back(yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true));
 
-    pMesh_ = yyMesh::create();
-    pMesh_->setAttrVertex(vertices);
-    pMesh_->setAttrIndice(indices);
-    pMesh_->setAttrColor(colors);
-    pMesh_->setAttrTexCoord(texCoords);
-    pMesh_->setTextures(pTextures_);
-    pMesh_->bulid();
+    pShaderEffective_ = yyShader::create("../shader/effective.vert", "../shader/effective_inversion.frag");
+
+    pPlane_ = yyMeshPlane::create(1.0f, 1.0f);
 }
 
 void App::update()
@@ -43,11 +22,27 @@ void App::update()
 
 void App::draw()
 {
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    pPostProcess_->beginPass(true);
+    glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
-    pShader_->setBool("useVertexColor", true);
-    pMesh_->draw(*pCamera_, *pShader_, false);
+    pPlane_->setTexture(pTexture_);
+    pShader_->setBool("useVertexColor", false);
+    pPlane_->draw(*pCamera_, *pShader_, false);
     pShader_->end();
+    pPostProcess_->endPass();
+
+    pPostProcess_->beginPass(false);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    pShaderEffective_->begin();
+    auto pTextureEffective = pPostProcess_->getTexture();
+    pPlane_->setTexture(pTextureEffective);
+    pShaderEffective_->setInt("width", yyFrambuffWidth);
+    pShaderEffective_->setInt("height", yyFrambuffHeight);
+    pPlane_->draw(*pCamera_, *pShaderEffective_, false);
+    pShaderEffective_->end();
+    pPostProcess_->endPass();
+
     yyShaderCheckError();
 }

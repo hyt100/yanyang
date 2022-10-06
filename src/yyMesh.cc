@@ -147,6 +147,7 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
     unsigned int normalNr   = 0;
     unsigned int ambientNr  = 0;
     unsigned int cubemapNr  = 0;
+    unsigned int noneNr  = 0;
     for (unsigned int i = 0; i < pTextures_.size(); ++i)
     {
         yyTextureType type = pTextures_[i]->getType();
@@ -164,6 +165,8 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
             samplerName = name + std::to_string(ambientNr++);
         else if (type == yyTextureType_CUBEMAP)
             samplerName = name + std::to_string(cubemapNr++);
+        else if (type == yyTextureType_NONE)
+            samplerName = name + std::to_string(noneNr++);
         else
             samplerName = name;
 

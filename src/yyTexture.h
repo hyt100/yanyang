@@ -36,6 +36,10 @@ public:
     {
         return Ptr(new yyTexture(cubemapFilenames, encoding));
     }
+    static Ptr create(unsigned int width, unsigned int height, unsigned int channels = 3)
+    {
+        return Ptr(new yyTexture(width, height, channels));
+    }
     ~yyTexture();
 
     unsigned int getId()    { return textureId_; }
@@ -46,7 +50,8 @@ public:
 private:
     yyTexture(const std::string &filename, yyTextureType type, bool flipY, yyImageEncoding encoding);
     yyTexture(uint8_t *buffer, int bufferSize, yyTextureType type, bool flipY, yyImageEncoding encoding);
-    yyTexture(const std::vector<std::string> &cubemapFilenames, yyImageEncoding encoding);
+    yyTexture(const std::vector<std::string> &cubemapFilenames, yyImageEncoding encoding); // for cubemap
+    yyTexture(unsigned int width, unsigned int height, unsigned int channels);             // for yyOffScreenBuffer
 private:
     void init(yyImage::Ptr &pImage);
     std::string filename_;
