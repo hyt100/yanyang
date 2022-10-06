@@ -110,6 +110,12 @@ void yyMesh::setRotation(float degree, const glm::vec3 &axis)
     modelMatRotate_ = glm::rotate(glm::mat4(1.0f), glm::radians(degree), axis);
 }
 
+void yyMesh::setRotation(const glm::quat &quat)
+{
+    needUpdateMat_ = true;
+    modelMatRotate_ = glm::toMat4(quat);
+}
+
 void yyMesh::setTranslation(const glm::vec3 &position)
 {
     needUpdateMat_ = true;

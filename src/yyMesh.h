@@ -39,6 +39,7 @@ public:
     void bulid();
 
     void setScale(const glm::vec3 &scale);
+    void setRotation(const glm::quat &quat);
     void setRotation(float degree, const glm::vec3 &axis);
     void setTranslation(const glm::vec3 &position);
     void setModelMatrix(const glm::mat4 &mat);
