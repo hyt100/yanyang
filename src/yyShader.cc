@@ -87,17 +87,35 @@ yyShader::yyShader(const std::string &vertexShaderFile, const std::string &fragm
     glDeleteShader(fragmentShader);
 
     programObject_ = shaderProgram;
+    isUseProgram_ = false;
     std::cout << "init prog ok" << std::endl;
 }
 
 void yyShader::begin()
 {
     glUseProgram(programObject_);
+    isUseProgram_ = true;
 }
 
 void yyShader::end()
 {
     glUseProgram(0);
+    isUseProgram_ = false;
+}
+
+void yyShader::beginTemp()
+{
+    isUseProgramBackup_ = isUseProgram_;
+    if (!isUseProgram_) {
+        begin();
+    }
+}
+
+void yyShader::endTemp()
+{
+    if (!isUseProgramBackup_) {
+        end();
+    }
 }
 
 GLenum yyShader::checkError(const char *file, int line)

@@ -24,27 +24,39 @@ public:
 
     void setMat4(const std::string &name, const glm::mat4 &mat)
     {
+        beginTemp();
         glUniformMatrix4fv(glGetUniformLocation(programObject_, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+        endTemp();
     }
     void setMat3(const std::string &name, const glm::mat3 &mat)
     {
+        beginTemp();
         glUniformMatrix3fv(glGetUniformLocation(programObject_, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+        endTemp();
     }
     void setVec3(const std::string &name, const glm::vec3 &value)
     {
-        glUniform3fv(glGetUniformLocation(programObject_, name.c_str()), 1, &value[0]); 
+        beginTemp();
+        glUniform3fv(glGetUniformLocation(programObject_, name.c_str()), 1, &value[0]);
+        endTemp();
     }
     void setBool(const std::string &name, bool value)
     {
-        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), (int)value); 
+        beginTemp();
+        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), (int)value);
+        endTemp();
     }
     void setInt(const std::string &name, int value)
     {
-        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), value); 
+        beginTemp();
+        glUniform1i(glGetUniformLocation(programObject_, name.c_str()), value);
+        endTemp();
     }
     void setFloat(const std::string &name, float value)
     {
-        glUniform1f(glGetUniformLocation(programObject_, name.c_str()), value); 
+        beginTemp();
+        glUniform1f(glGetUniformLocation(programObject_, name.c_str()), value);
+        endTemp();
     }
     // textureUnit: 0...15
     void setTextureUnit(const std::string &samplerName, unsigned int textureUnit)
@@ -59,8 +71,12 @@ public:
 
 private:
     yyShader(const std::string &vertexShaderFile, const std::string &fragmentShaderFile);
+    void beginTemp();
+    void endTemp();
 private:
     unsigned int programObject_;  //handle to a progream object
+    bool isUseProgram_;
+    bool isUseProgramBackup_;
 };
 
 #define yyShaderCheckError()   yyShader::checkError(__FILE__, __LINE__) 

@@ -10,8 +10,11 @@ void App::setup()
     pTexture_ = yyTexture::create("../assets/lena_512x512.jpg", yyTextureType_DIFFUSE, true);
 
     pShader_ = yyShader::create("../shader/basic.vert", "../shader/basic.frag");
+    pShader_->setBool("useVertexColor", false);
 
     pShaderEffective_ = yyShader::create("../shader/effective.vert", "../shader/effective_inversion.frag");
+    pShaderEffective_->setInt("width", yyFrambuffWidth);
+    pShaderEffective_->setInt("height", yyFrambuffHeight);
 
     pPlane_ = yyMeshPlane::create(1.0f, 1.0f);
 }
@@ -27,7 +30,6 @@ void App::draw()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShader_->begin();
     pPlane_->setTexture(pTexture_);
-    pShader_->setBool("useVertexColor", false);
     pPlane_->draw(*pCamera_, *pShader_, false);
     pShader_->end();
     pPostProcess_->endPass();
@@ -38,8 +40,6 @@ void App::draw()
     pShaderEffective_->begin();
     auto pTextureEffective = pPostProcess_->getTexture();
     pPlane_->setTexture(pTextureEffective);
-    pShaderEffective_->setInt("width", yyFrambuffWidth);
-    pShaderEffective_->setInt("height", yyFrambuffHeight);
     pPlane_->draw(*pCamera_, *pShaderEffective_, false);
     pShaderEffective_->end();
     pPostProcess_->endPass();
