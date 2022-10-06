@@ -51,15 +51,15 @@ yyOffScreenBuffer::~yyOffScreenBuffer()
 
 void yyOffScreenBuffer::bind()
 {
-    // glGetIntegerv(GL_FRAMEBUFFER_BINDING, &backupFramebuffer_);
-    // glGetIntegerv(GL_VIEWPORT, backupViewport_);
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &backupFramebuffer_);
+    glGetIntegerv(GL_VIEWPORT, backupViewport_);
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer_);
-    // glViewport(0, 0, width_, height_);
+    glViewport(0, 0, width_, height_);
 }
 
 void yyOffScreenBuffer::unbind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    // glBindFramebuffer(GL_FRAMEBUFFER, backupFramebuffer_);
-    // glViewport(backupViewport_[0], backupViewport_[1], backupViewport_[2], backupViewport_[3]);
+    glBindFramebuffer(GL_FRAMEBUFFER, backupFramebuffer_);
+    glViewport(backupViewport_[0], backupViewport_[1], backupViewport_[2], backupViewport_[3]);
 }
