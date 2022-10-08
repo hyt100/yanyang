@@ -3,12 +3,11 @@
 int yyCore::framebuffWidth_ = 0;
 int yyCore::framebuffHeight_ = 0;
 
-int yyCore::setupWindow(const std::string &name, int width, int height)
+void yyCore::setupWindow(const std::string &name, int width, int height)
 {
     windowName_   = name;
     windowWidth_  = width;
     windowHeight_ = height;
-    return 0;
 }
 
 int yyCore::init()
@@ -18,6 +17,9 @@ int yyCore::init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);  //固定窗口大小
+    if (antialias_) {
+        glfwWindowHint(GLFW_SAMPLES, 4);
+    }
 
 #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -55,6 +57,10 @@ int yyCore::run(yyBaseApp *app)
         processInput();
 
         // render
+        if (antialias_)
+            glEnable(GL_MULTISAMPLE);
+        if (outputSRGB_)
+            glEnable(GL_FRAMEBUFFER_SRGB);
         glViewport(0, 0, framebuffWidth_, framebuffHeight_);
         app_->update();
         app_->draw();

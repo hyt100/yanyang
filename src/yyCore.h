@@ -26,7 +26,9 @@ public:
         return instance;
     }
 
-    int setupWindow(const std::string &name, int width, int height);
+    void setupWindow(const std::string &name, int width, int height);
+    void setAntiAliasing(bool val) { antialias_ = val; }
+    void setOutputSRGB(bool val)   { outputSRGB_ = val; }
     int init();
     int run(yyBaseApp *app);
 
@@ -35,7 +37,8 @@ public:
     static int framebuffHeight_;
 
 private:
-    yyCore() {}
+    yyCore(): antialias_(false), outputSRGB_(false)
+    {}
     void processInput();
     static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
     static void mouse_callback(GLFWwindow* window, double xposIn, double yposIn);
@@ -44,6 +47,8 @@ private:
 private:
     std::string windowName_;
     int windowWidth_, windowHeight_;
+    bool antialias_;
+    bool outputSRGB_;
     GLFWwindow* window_;
     std::shared_ptr<yyBaseApp> app_;
 };

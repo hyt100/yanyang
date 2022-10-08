@@ -2,6 +2,7 @@
 #include "yyUtil.h"
 #include "yyTexture.h"
 
+// TODO: 离屏缓冲支持MSAA
 class yyOffScreenBuffer
 {
 public:
