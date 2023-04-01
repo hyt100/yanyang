@@ -63,7 +63,6 @@ int yyCore::run(yyBaseApp *app)
             glEnable(GL_FRAMEBUFFER_SRGB);
         glViewport(0, 0, framebuffWidth_, framebuffHeight_);
         app_->update();
-        app_->draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window_);

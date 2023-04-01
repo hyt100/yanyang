@@ -7,23 +7,23 @@ class yyOffScreenBuffer
 {
 public:
     using Ptr = std::shared_ptr<yyOffScreenBuffer>;
-    static Ptr create(unsigned int width, unsigned int height, unsigned int channels = 3)
+    static Ptr create(unsigned int width, unsigned int height, unsigned int channels = 3, bool hdrColor = false)
     {
-        return Ptr(new yyOffScreenBuffer(width, height, channels));
+        return Ptr(new yyOffScreenBuffer(width, height, channels, hdrColor));
     }
     ~yyOffScreenBuffer();
 
-    // unsigned int getTextureId()    { return textureId_; }
-    yyTexture::Ptr getTexture()       { return pTexture_; }
+    yyTexture::Ptr& getTexture()       { return pTexture_; }
     void bind();
     void unbind();
 
 private:
-    yyOffScreenBuffer(unsigned int width, unsigned int height, unsigned int channels);
+    yyOffScreenBuffer(unsigned int width, unsigned int height, unsigned int channels, bool hdrColor);
 private:
     unsigned int width_;
     unsigned int height_;
     unsigned int channels_;
+    bool hdrColor_;
     unsigned int framebuffer_;
     // unsigned int textureId_; // color attachment texture
     yyTexture::Ptr pTexture_;   // color attachment texture

@@ -111,7 +111,7 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
     pMesh->setAttrTangent(tangents);
     pMesh->setAttrBitangent(bitangents);
     pMesh->setTextures(pTextures);
-    pMesh->bulid();
+    pMesh->build();
     std::cout << "model vertex size: " << vertexs.size() << std::endl;
     std::cout << "model texture size: " << pTextures.size() << std::endl;
     return pMesh;
@@ -166,7 +166,7 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
 
         if (!skip)
         {
-            auto pTexture = yyTexture::create(filename, convertTextureType(type), false, yyImageEncodingLinear);
+            auto pTexture = yyTexture::create(filename, convertTextureType(type), false);
             out.push_back(pTexture);
             pTexturesLoaded_.push_back(pTexture);
         }

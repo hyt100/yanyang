@@ -1,10 +1,11 @@
 #include "yyOffScreenBuffer.h"
 
-yyOffScreenBuffer::yyOffScreenBuffer(unsigned int width, unsigned int height, unsigned int channels)
+yyOffScreenBuffer::yyOffScreenBuffer(unsigned int width, unsigned int height, unsigned int channels, bool hdrColor)
 {
     width_ = width;
     height_ = height;
     channels_ = channels;
+    hdrColor_ = hdrColor;
 
     // create a framebuffer
     glGenFramebuffers(1, &framebuffer_);
@@ -24,7 +25,7 @@ yyOffScreenBuffer::yyOffScreenBuffer(unsigned int width, unsigned int height, un
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId_, 0); // 附加这个纹理到framebuffer
-    pTexture_ = yyTexture::create(width, height, channels);
+    pTexture_ = yyTexture::create(width, height, channels, hdrColor);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pTexture_->getId(), 0); // 附加这个纹理到framebuffer
 
     // create a renderbuffer object for depth and stencil attachment

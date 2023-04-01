@@ -29,7 +29,7 @@ yyMesh::~yyMesh()
     glDeleteVertexArrays(1, &vao_);
 }
 
-void yyMesh::bulid()
+void yyMesh::build()
 {
     if (vertexs_.size() == 0 || indices_.size() == 0) {
         throw std::runtime_error("vertexs or indices can't be empty!");
@@ -39,10 +39,10 @@ void yyMesh::bulid()
     glBindVertexArray(vao_);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(unsigned int), indices_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices_.size() * sizeof(indices_[0]), indices_.data(), GL_STATIC_DRAW);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_VERTEX]);
-    glBufferData(GL_ARRAY_BUFFER, vertexs_.size() * sizeof(glm::vec3), vertexs_.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, vertexs_.size() * sizeof(vertexs_[0]), vertexs_.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(YY_ATTR_VERTEX, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(YY_ATTR_VERTEX);
  
@@ -51,7 +51,7 @@ void yyMesh::bulid()
             std::cout << "warning: color size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_COLOR]);
-        glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(glm::vec4), colors_.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, colors_.size() * sizeof(colors_[0]), colors_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_COLOR, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_COLOR);
     }
@@ -60,7 +60,7 @@ void yyMesh::bulid()
             std::cout << "warning: normals size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_NORMAL]);
-        glBufferData(GL_ARRAY_BUFFER, normals_.size() * sizeof(glm::vec3), normals_.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, normals_.size() * sizeof(normals_[0]), normals_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_NORMAL);
     }
@@ -69,7 +69,7 @@ void yyMesh::bulid()
             std::cout << "warning: texCoords size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_TEXCOORD]);
-        glBufferData(GL_ARRAY_BUFFER, texCoords_.size() * sizeof(glm::vec2), texCoords_.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, texCoords_.size() * sizeof(texCoords_[0]), texCoords_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_TEXCOORD, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_TEXCOORD);
     }
@@ -78,7 +78,7 @@ void yyMesh::bulid()
             std::cout << "warning: tangents size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_TANGENT]);
-        glBufferData(GL_ARRAY_BUFFER, tangents_.size() * sizeof(glm::vec3), tangents_.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, tangents_.size() * sizeof(tangents_[0]), tangents_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_TANGENT);
     }
@@ -87,7 +87,7 @@ void yyMesh::bulid()
             std::cout << "warning: bitangents size abnormal" << std::endl;
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_BITANGENT]);
-        glBufferData(GL_ARRAY_BUFFER, bitangents_.size() * sizeof(glm::vec3), bitangents_.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, bitangents_.size() * sizeof(bitangents_[0]), bitangents_.data(), GL_STATIC_DRAW);
         glVertexAttribPointer(YY_ATTR_BITANGENT, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_BITANGENT);
     }
@@ -95,7 +95,7 @@ void yyMesh::bulid()
     // unbind
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); // EBO的解绑必须在VAO解绑之后执行
 }
 
 void yyMesh::setScale(const glm::vec3 &scale)
@@ -135,17 +135,17 @@ void yyMesh::updateMatrix()
     }
 }
 
-void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
+void yyMesh::draw(const yyCamera::Ptr &camera, yyShader::Ptr &shader, bool wireframeMode)
 {
     // calculate MVP
     updateMatrix();
-    glm::mat4 mvpMat = camera.viewProjectionMat_ * modelMat_;
-    glm::mat4 mvMat = camera.viewMat_ * modelMat_;
-    glm::mat3 normalMat = glm::mat3(glm::transpose(glm::inverse(mvMat)));  // remove translation component
-    shader.setMat4("mMat", modelMat_);
-    shader.setMat4("mvMat", mvMat);
-    shader.setMat4("mvpMat", mvpMat);
-    shader.setMat3("normalMat", normalMat);
+    glm::mat4 mvpMat = camera->viewProjectionMat_ * modelMat_;
+    glm::mat4 mvMat = camera->viewMat_ * modelMat_;
+    glm::mat3 normalMat = glm::mat3(glm::transpose(glm::inverse(mvMat)));  // in view space
+    shader->setMat4("mMat", modelMat_);
+    shader->setMat4("mvMat", mvMat);
+    shader->setMat4("mvpMat", mvpMat);
+    shader->setMat3("normalMat", normalMat);
 
     // bind appropriate textures
     unsigned int diffuseNr  = 0;
@@ -181,7 +181,7 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
         // active proper texture unit before binding
         glActiveTexture(GL_TEXTURE0 + i);        // 在绑定之前，激活纹理单元
         // now set the sampler to the correct texture unit
-        shader.setTextureUnit(samplerName, i);   // 告诉着色器的采样器使用哪个纹理单元
+        shader->setTextureUnit(samplerName, i);   // 告诉着色器的采样器使用哪个纹理单元
         // and finally bind the texture 绑定纹理对象到激活的纹理单元 
         if (type == yyTextureType_CUBEMAP)
             glBindTexture(GL_TEXTURE_CUBE_MAP, textureId);
@@ -194,6 +194,7 @@ void yyMesh::draw(const yyCamera &camera, yyShader &shader, bool wireframeMode)
     else
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+    // draw
     glBindVertexArray(vao_);
     glDrawElements(GL_TRIANGLES, indices_.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

@@ -1,4 +1,5 @@
 #version 330 core
+in vec3 fNormal;
 in vec4 fColor;
 in vec2 fUv;
 

@@ -7,22 +7,19 @@ public:
     App() {}
     virtual ~App() {}
     void setup();
-
-    void update();
     void keyprocess(yyEvent event)
     {
         if (pCamera_) {
             pCamera_->keyprocess(event);
         }
     }
-
-    void draw();
+    void update();
 
 private:
-    yyPerspectiveCamera::Ptr pCamera_;
-    yyShader::Ptr pShader_;
-    yyShader::Ptr pShaderEffective_;
+    yyCameraPerspective::Ptr pCamera_;
+    yyShader::Ptr pShaderEffective0_;
+    yyShader::Ptr pShaderEffective1_;
     yyTexture::Ptr pTexture_;
-    yyMeshPlane::Ptr pPlane_;
+    yyMeshPlane::Ptr pQuad_;
     yyPostProcess::Ptr pPostProcess_;
 };

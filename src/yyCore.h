@@ -4,13 +4,14 @@
 #include "yyBaseApp.h"
 #include "yyMesh.h"
 #include "yyTexture.h"
-#include "yyPerspectiveCamera.h"
+#include "yyCameraPerspective.h"
 #include "yyModel.h"
 #include "yyLight.h"
-#include "yySkybox.h"
 #include "yyPostProcess.h"
+#include "yyMeshSkybox.h"
 #include "yyMeshPlane.h"
 #include "yyMeshBox.h"
+#include "yyMeshSphere.h"
 
 class yyCore
 {

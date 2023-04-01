@@ -19,14 +19,13 @@ public:
         return Ptr(new yyPostProcess(width, height));
     }
     ~yyPostProcess() = default;
-    void beginPass(bool renderToTexture);
+    void beginPass();
     void endPass();
-    yyTexture::Ptr getTexture() { return pingPongBuffer_[1]->getTexture(); }
+    yyTexture::Ptr& getTexture() { return pingPongBuffer_[1]->getTexture(); }
 
 private:
     yyPostProcess(unsigned int width, unsigned int height);
 
 private:
-    yyOffScreenBuffer::Ptr pingPongBuffer_[2];
-    bool isRenderToTexture_;
+    yyOffScreenBuffer::Ptr pingPongBuffer_[2]; // 用于级联多次后处理
 };

@@ -15,40 +15,40 @@ public:
         // return std::make_shared<yyMesh>();
         return Ptr(new yyMesh());
     }
-    ~yyMesh();
+    virtual ~yyMesh();
 
-    void setAttrVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs; }
-    void setAttrNormal(const std::vector<glm::vec3> &normals)        { normals_ = normals; }
-    void setAttrColor(const std::vector<glm::vec4> &colors)          { colors_ = colors; }
-    void setAttrTexCoord(const std::vector<glm::vec2> &texCoords)   { texCoords_ = texCoords; }
-    void setAttrTangent(const std::vector<glm::vec3> &tangents)     { tangents_ = tangents; }
-    void setAttrBitangent(const std::vector<glm::vec3> &bitangents) { bitangents_ = bitangents; }
-    void setAttrIndice(const std::vector<unsigned int> &indices)    { indices_ = indices; }
-    void setAttrBoneID(const std::vector<int> &boneIDs)
+    virtual void setAttrVertex(const std::vector<glm::vec3> &vertexs)        { vertexs_ = vertexs;       }
+    virtual void setAttrNormal(const std::vector<glm::vec3> &normals)        { normals_ = normals;       }
+    virtual void setAttrColor(const std::vector<glm::vec4> &colors)          { colors_ = colors;         }
+    virtual void setAttrTexCoord(const std::vector<glm::vec2> &texCoords)    { texCoords_ = texCoords;   }
+    virtual void setAttrTangent(const std::vector<glm::vec3> &tangents)      { tangents_ = tangents;     }
+    virtual void setAttrBitangent(const std::vector<glm::vec3> &bitangents)  { bitangents_ = bitangents; }
+    virtual void setAttrIndice(const std::vector<unsigned int> &indices)     { indices_ = indices;       }
+    virtual void setAttrBoneID(const std::vector<int> &boneIDs)
     {
         if (boneIDs.size() == yyMAX_BONE_INFLUENCE)
             boneIDs_ = boneIDs;
     }
-    void setAttrBoneWeight(const std::vector<float> &boneWeights)
+    virtual void setAttrBoneWeight(const std::vector<float> &boneWeights)
     {
         if (boneWeights.size() == yyMAX_BONE_INFLUENCE)
             boneWeights_ = boneWeights;
     }
-    void setTextures(std::vector<yyTexture::Ptr> &pTextures) { pTextures_ = pTextures; }
+    virtual void setTextures(std::vector<yyTexture::Ptr> &pTextures) { pTextures_ = pTextures; }
+    virtual void setTextures(yyTexture::Ptr &pTextures) { pTextures_.clear(); pTextures_.emplace_back(pTextures); } // single texture
 
-    void bulid();
+    virtual void build();
 
-    void setScale(const glm::vec3 &scale);
-    void setRotation(const glm::quat &quat);
-    void setRotation(float degree, const glm::vec3 &axis);
-    void setTranslation(const glm::vec3 &position);
-    void setModelMatrix(const glm::mat4 &mat);
+    virtual void setScale(const glm::vec3 &scale);
+    virtual void setRotation(const glm::quat &quat);
+    virtual void setRotation(float degree, const glm::vec3 &axis);
+    virtual void setTranslation(const glm::vec3 &position);
+    virtual void setModelMatrix(const glm::mat4 &mat);
 
-    void draw(const yyCamera &camera, yyShader &pShader, bool wireframeMode = false);
+    virtual void draw(const yyCamera::Ptr &camera, yyShader::Ptr &pShader, bool wireframeMode = false);
 
-private:
+protected:
     yyMesh();
-private:
     void updateMatrix();
 
     std::vector<glm::vec3> vertexs_;

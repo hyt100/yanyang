@@ -22,23 +22,23 @@ class yyTexture
 {
 public:
     using Ptr = std::shared_ptr<yyTexture>;
-    static Ptr create(const std::string &filename, yyTextureType type, bool flipY, yyImageEncoding encoding = yyImageEncodingLinear)
+    static Ptr create(const std::string &filename, yyTextureType type, bool flipY)
     {
         // return std::make_shared<yyTexture>(filename, type, flipY, encoding);
-        return Ptr(new yyTexture(filename, type, flipY, encoding));
+        return Ptr(new yyTexture(filename, type, flipY));
     }
-    static Ptr create(uint8_t *buffer, int bufferSize, yyTextureType type, bool flipY, yyImageEncoding encoding = yyImageEncodingLinear)
+    static Ptr create(uint8_t *buffer, int bufferSize, yyTextureType type, bool flipY)
     {
         // return std::make_shared<yyTexture>(buffer, bufferSize, type, flipY, encoding);
-        return Ptr(new yyTexture(buffer, bufferSize, type, flipY, encoding));
+        return Ptr(new yyTexture(buffer, bufferSize, type, flipY));
     }
-    static Ptr create(const std::vector<std::string> &cubemapFilenames, yyImageEncoding encoding = yyImageEncodingLinear)
+    static Ptr create(const std::vector<std::string> &cubemapFilenames)
     {
-        return Ptr(new yyTexture(cubemapFilenames, encoding));
+        return Ptr(new yyTexture(cubemapFilenames));
     }
-    static Ptr create(unsigned int width, unsigned int height, unsigned int channels)
+    static Ptr create(unsigned int width, unsigned int height, unsigned int channels, bool hdrColor)
     {
-        return Ptr(new yyTexture(width, height, channels));
+        return Ptr(new yyTexture(width, height, channels, hdrColor));
     }
     ~yyTexture();
 
@@ -48,10 +48,10 @@ public:
     std::string getFilePath() { return filename_; }
 
 private:
-    yyTexture(const std::string &filename, yyTextureType type, bool flipY, yyImageEncoding encoding);
-    yyTexture(uint8_t *buffer, int bufferSize, yyTextureType type, bool flipY, yyImageEncoding encoding);
-    yyTexture(const std::vector<std::string> &cubemapFilenames, yyImageEncoding encoding); // for cubemap
-    yyTexture(unsigned int width, unsigned int height, unsigned int channels);             // for yyOffScreenBuffer
+    yyTexture(const std::string &filename, yyTextureType type, bool flipY);
+    yyTexture(uint8_t *buffer, int bufferSize, yyTextureType type, bool flipY);
+    yyTexture(const std::vector<std::string> &cubemapFilenames);     // for cubemap
+    yyTexture(unsigned int width, unsigned int height, unsigned int channels, bool hdrColor);  // for yyOffScreenBuffer
 private:
     void init(yyImage::Ptr &pImage);
     std::string filename_;

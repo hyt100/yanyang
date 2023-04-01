@@ -39,5 +39,6 @@ include_directories(src/)
 
 add_subdirectory(3rd-party/glad)
 add_subdirectory(src)
-add_subdirectory(example/triangle)
+add_subdirectory(example/basic)
+add_subdirectory(example/postprocess)
 add_subdirectory(example/model)

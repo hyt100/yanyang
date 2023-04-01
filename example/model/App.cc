@@ -4,7 +4,7 @@ void App::setup()
 {
     glm::vec3 cameraPosition(0.0f, 0.0f, 1.5f);
     glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f);
-    pCamera_ = yyPerspectiveCamera::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
+    pCamera_ = yyCameraPerspective::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
     pShader_ = yyShader::create("../shader/blinnphong.vert", "../shader/blinnphong.frag");
     pShaderCubemap_ = yyShader::create("../shader/skybox.vert", "../shader/skybox.frag");
@@ -17,7 +17,7 @@ void App::setup()
         std::string("../assets/skybox3/front.jpg"),
         std::string("../assets/skybox3/back.jpg")
     };
-    pSkybox_ = yySkybox::create(images);
+    pSkybox_ = yyMeshSkybox::create(images);
 
     pModel_ = yyModel::create("../assets/shield/shield.ply"); //shield.ply中没有带贴图
     std::vector<yyTexture::Ptr> pTextures;
@@ -40,10 +40,7 @@ void App::setup()
 
 void App::update()
 {
-}
-
-void App::draw()
-{
+    // 渲染model
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
@@ -63,10 +60,17 @@ void App::draw()
         // material properties
         pShader_->setFloat("material.shininess", 128.0f);
 
-        pMesh->draw(*pCamera_, *pShader_, false);
+        pMesh->draw(pCamera_, pShader_, false);
         pShader_->end();
     }
+
+    // 渲染skybox
+    glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
+    pShaderCubemap_->begin();
     pSkybox_->setTranslation(pCamera_->position_);
-    pSkybox_->draw(*pCamera_, *pShaderCubemap_, false);
+    pSkybox_->draw(pCamera_, pShaderCubemap_, false);
+    pShaderCubemap_->end();
+    glDepthFunc(GL_LESS); // set depth function back to default
+    
     yyShaderCheckError();
 }

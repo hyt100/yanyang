@@ -1,7 +1,7 @@
 #pragma once
 #include "yyMesh.h"
 
-class yyMeshPlane
+class yyMeshPlane: public yyMesh
 {
 public:
     using Ptr = std::shared_ptr<yyMeshPlane>;
@@ -9,23 +9,12 @@ public:
     {
         return Ptr(new yyMeshPlane(width, height, color));
     }
-    ~yyMeshPlane() = default;
-
-    void setTexture(yyTexture::Ptr &pTexture)
+    static Ptr createQuad() // for pitcture
     {
-        std::vector<yyTexture::Ptr> pTextures_ = { pTexture };
-        pMesh_->setTextures(pTextures_);
+        return create(2.0f, 2.0f); // the range of [-1,1] for NDC
     }
-    void setScale(const glm::vec3 &scale)                 { pMesh_->setScale(scale); }
-    void setRotation(float degree, const glm::vec3 &axis) { pMesh_->setRotation(degree, axis); }
-    void setRotation(const glm::quat &quat)               { pMesh_->setRotation(quat); }
-    void setTranslation(const glm::vec3 &position)        { pMesh_->setTranslation(position); }
-
-    void draw(const yyCamera &camera, yyShader &pShader, bool wireframeMode = false) { pMesh_->draw(camera, pShader, wireframeMode); }
+    virtual ~yyMeshPlane() = default;
 
 private:
     yyMeshPlane(float width, float height, const glm::vec4 &color);
-
-private:
-    yyMesh::Ptr pMesh_;
 };

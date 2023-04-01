@@ -1,19 +1,14 @@
 #version 330 core
-in vec4 fColor;
 in vec2 fUv;
-in vec3 fFragPos;
-in vec3 fNormal;
-
 uniform sampler2D texture_none0;
-uniform int width;
-uniform int height;
 
 out vec4 FragColor;
 
 void main()
 {
-    float offsetW = 1.0 / width;
-    float offsetH = 1.0 / height;
+    vec2 size = textureSize(texture_none0, 0);  
+    float offsetW = 1.0 / size[0];
+    float offsetH = 1.0 / size[1];
 
     vec2 offsets[9] = vec2[](
         vec2(-offsetW,  offsetH), vec2( 0.0f,    offsetH), vec2( offsetW,  offsetH),

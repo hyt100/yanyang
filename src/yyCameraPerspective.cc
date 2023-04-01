@@ -1,7 +1,7 @@
-#include "yyPerspectiveCamera.h"
+#include "yyCameraPerspective.h"
 #include <cmath>
 
-yyPerspectiveCamera::yyPerspectiveCamera(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target)
+yyCameraPerspective::yyCameraPerspective(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target)
 {
     // 检查参数是否有效
     target_ = target;
@@ -38,7 +38,7 @@ yyPerspectiveCamera::yyPerspectiveCamera(float width, float height, float fov, f
     update();
 }
 
-void yyPerspectiveCamera::update()
+void yyCameraPerspective::update()
 {
     // //计算相机位置
     float thetaRad = glm::radians(theta_);
@@ -59,7 +59,7 @@ void yyPerspectiveCamera::update()
     viewProjectionMat_ = projectionMat_ * viewMat_;
 }
 
-void yyPerspectiveCamera::keyprocess(yyEvent event)
+void yyCameraPerspective::keyprocess(yyEvent event)
 {
     switch (event) {
     case YYEVENT_UP:
@@ -85,7 +85,7 @@ void yyPerspectiveCamera::keyprocess(yyEvent event)
     }
 }
 
-void yyPerspectiveCamera::up()
+void yyCameraPerspective::up()
 {
     theta_ -= 3.0f;
     if (theta_ < 0.1f)
@@ -93,7 +93,7 @@ void yyPerspectiveCamera::up()
     update();
 }
 
-void yyPerspectiveCamera::down()
+void yyCameraPerspective::down()
 {
     theta_ += 3.0f;
     if (theta_ > 179.9f)
@@ -101,7 +101,7 @@ void yyPerspectiveCamera::down()
     update();
 }
 
-void yyPerspectiveCamera::left()
+void yyCameraPerspective::left()
 {
     gamma_ -= 3.0f;
     if (gamma_ < 0.0f)
@@ -109,7 +109,7 @@ void yyPerspectiveCamera::left()
     update();
 }
 
-void yyPerspectiveCamera::right()
+void yyCameraPerspective::right()
 {
     gamma_ += 3.0f;
     if (gamma_ > 360.0f)
@@ -117,7 +117,7 @@ void yyPerspectiveCamera::right()
     update();
 }
 
-void yyPerspectiveCamera::zoom_in()
+void yyCameraPerspective::zoom_in()
 {
     R_ -= R_Step_;
     if (R_ < R_Min_)
@@ -125,7 +125,7 @@ void yyPerspectiveCamera::zoom_in()
     update();
 }
 
-void yyPerspectiveCamera::zoom_out()
+void yyCameraPerspective::zoom_out()
 {
     R_ += R_Step_;
     if (R_ > R_Max_)

@@ -31,11 +31,10 @@ yyMeshPlane::yyMeshPlane(float width, float height, const glm::vec4 &color)
         0, 2, 3
     };
 
-    pMesh_ = yyMesh::create();
-    pMesh_->setAttrVertex(vertices);
-    pMesh_->setAttrNormal(normals);
-    pMesh_->setAttrIndice(indices);
-    pMesh_->setAttrColor(colors);
-    pMesh_->setAttrTexCoord(texCoords);
-    pMesh_->bulid();
+    setAttrVertex(vertices);
+    setAttrNormal(normals);
+    setAttrIndice(indices);
+    setAttrColor(colors);
+    setAttrTexCoord(texCoords);
+    build();
 }

@@ -3,21 +3,21 @@
 #include "yyCamera.h"
 #include <memory>
 
-class yyPerspectiveCamera: public yyCamera
+class yyCameraPerspective: public yyCamera
 {
 public:
-    using Ptr = std::shared_ptr<yyPerspectiveCamera>;
+    using Ptr = std::shared_ptr<yyCameraPerspective>;
     static Ptr create(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target)
     {
-        // return std::make_shared<yyPerspectiveCamera>(width, height, fov, near, far, position, target);
-        return Ptr(new yyPerspectiveCamera(width, height, fov, near, far, position, target));
+        // return std::make_shared<yyCameraPerspective>(width, height, fov, near, far, position, target);
+        return Ptr(new yyCameraPerspective(width, height, fov, near, far, position, target));
     }
-    ~yyPerspectiveCamera() = default;
+    ~yyCameraPerspective() = default;
 
     void keyprocess(yyEvent event);
     
 private:
-    yyPerspectiveCamera(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target);
+    yyCameraPerspective(float width, float height, float fov, float near, float far, const glm::vec3 &position, const glm::vec3 &target);
 private:
     void update();
 

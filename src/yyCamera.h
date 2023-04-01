@@ -4,6 +4,8 @@
 class yyCamera
 {
 public:
+    using Ptr = std::shared_ptr<yyCamera>;
+
     glm::mat4 projectionMat_;
     glm::mat4 viewMat_;
     glm::mat4 viewProjectionMat_;
