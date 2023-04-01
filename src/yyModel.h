@@ -32,7 +32,7 @@ private:
     yyTextureType convertTextureType(aiTextureType type);
 
     std::vector<yyMesh::Ptr> pMeshs_;
-    std::string directory_;
+    std::string rootDirectory_;
     // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
-    std::vector<yyTexture::Ptr> pTexturesLoaded_;
+    std::map<std::string, yyTexture::Ptr> texturesMap_;
 };

@@ -22,7 +22,7 @@ yyModel::yyModel(const std::string &filename)
         return;
     }
     // retrieve the directory path of the filepath
-    directory_ = filename.substr(0, filename.find_last_of('/'));
+    rootDirectory_ = filename.substr(0, filename.find_last_of('/'));
 
     // process ASSIMP's root node recursively
     processNode(scene, scene->mRootNode);
@@ -57,7 +57,7 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
     std::vector<yyTexture::Ptr> pTextures;
 
     // walk through each of the mesh's vertices
-    for(unsigned int i = 0; i < mesh->mNumVertices; i++) {
+    for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
         vertexs.emplace_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
 
         if (mesh->HasNormals()) {
@@ -83,24 +83,27 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
         aiFace face = mesh->mFaces[i];
         // retrieve all indices of the face and store them in the indices vector
         for(unsigned int j = 0; j < face.mNumIndices; j++)
-            indices.push_back(face.mIndices[j]);        
+            indices.push_back(face.mIndices[j]);
     }
 
     // process materials
-    aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-    std::vector<yyTexture::Ptr> pTexturesDiffuse;
-    std::vector<yyTexture::Ptr> pTexturesSpecular;
-    std::vector<yyTexture::Ptr> pTexturesNormal;
-    std::vector<yyTexture::Ptr> pTexturesAmbient;
-    loadMaterialTextures(scene, material, aiTextureType_DIFFUSE, pTexturesDiffuse);
-    pTextures.insert(pTextures.end(), pTexturesDiffuse.begin(), pTexturesDiffuse.end());
-    loadMaterialTextures(scene, material, aiTextureType_SPECULAR, pTexturesSpecular);
-    pTextures.insert(pTextures.end(), pTexturesSpecular.begin(), pTexturesSpecular.end());
-    loadMaterialTextures(scene, material, aiTextureType_NORMALS, pTexturesNormal);
-    pTextures.insert(pTextures.end(), pTexturesNormal.begin(), pTexturesNormal.end());
-    loadMaterialTextures(scene, material, aiTextureType_AMBIENT, pTexturesAmbient);
-    pTextures.insert(pTextures.end(), pTexturesAmbient.begin(), pTexturesAmbient.end());
+    if (scene->mNumMaterials > 0 && mesh->mMaterialIndex >= 0) {
+        std::vector<yyTexture::Ptr> pTexturesDiffuse;
+        std::vector<yyTexture::Ptr> pTexturesSpecular;
+        std::vector<yyTexture::Ptr> pTexturesNormal;
+        std::vector<yyTexture::Ptr> pTexturesAmbient;
 
+        aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+        loadMaterialTextures(scene, material, aiTextureType_DIFFUSE, pTexturesDiffuse);
+        pTextures.insert(pTextures.end(), pTexturesDiffuse.begin(), pTexturesDiffuse.end());
+        loadMaterialTextures(scene, material, aiTextureType_SPECULAR, pTexturesSpecular);
+        pTextures.insert(pTextures.end(), pTexturesSpecular.begin(), pTexturesSpecular.end());
+        loadMaterialTextures(scene, material, aiTextureType_NORMALS, pTexturesNormal);
+        pTextures.insert(pTextures.end(), pTexturesNormal.begin(), pTexturesNormal.end());
+        loadMaterialTextures(scene, material, aiTextureType_AMBIENT, pTexturesAmbient);
+        pTextures.insert(pTextures.end(), pTexturesAmbient.begin(), pTexturesAmbient.end());
+    }
+    
     // create and build mesh
     auto pMesh = yyMesh::create();
     pMesh->setAttrIndice(indices);
@@ -130,46 +133,34 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
     out.clear();
     for (unsigned int i = 0; i < material->GetTextureCount(type); i++)
     {
-        aiString str;
-        material->GetTexture(type, i, &str);
+        aiString texturePath;
+        material->GetTexture(type, i, &texturePath);
 
-#if 0  //支持内置材质
-        auto embededTextrure = scene->GetEmbeddedTexture(str.C_Str());
+        std::string filename = rootDirectory_ + "/" + texturePath.C_Str();
+        std::cout << "texture filename: " << filename << std::endl;
+
+        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+        if (texturesMap_.find(filename) != texturesMap_.end()) {
+            out.emplace_back(texturesMap_[filename]);
+            continue;
+        }
+
+        yyTexture::Ptr pTexture;
+        auto embededTextrure = scene->GetEmbeddedTexture(texturePath.C_Str()); //检测是否是内嵌的材质
         if (embededTextrure) {
             // 如果mHeight为0，则pcData中存储了压缩格式像素，mWidth指定数据大小;
             // 如果mHeight不为0，则pcData中存储了ARGB8888格式像素，mWidth * mHeight指定像素数据大小
             if (embededTextrure->mHeight == 0) {
-                auto pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth, 
-                                convertTextureType(type), false, yyImageEncodingLinear);
+                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth, 
+                                convertTextureType(type), false);
             } else {
                 //TODO
             }
-            continue;
+        } else {
+            pTexture = yyTexture::create(filename, convertTextureType(type), false);
         }
-#endif
-
-        std::string filename = directory_ + "/" + str.C_Str();
-        bool skip = false;
-
-        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-        for (unsigned int j = 0; j < pTexturesLoaded_.size(); j++)
-        {
-            auto filenameRef = pTexturesLoaded_[j]->getFilePath();
-            if (filenameRef.size() == 0)
-                continue;
-            if (filename == filenameRef) {
-                out.push_back(pTexturesLoaded_[j]);
-                skip = true; // a texture with the same filepath has already been loaded
-                break;
-            }
-        }
-
-        if (!skip)
-        {
-            auto pTexture = yyTexture::create(filename, convertTextureType(type), false);
-            out.push_back(pTexture);
-            pTexturesLoaded_.push_back(pTexture);
-        }
+        out.emplace_back(pTexture);
+        texturesMap_[filename] = pTexture;
     }
 }
 
