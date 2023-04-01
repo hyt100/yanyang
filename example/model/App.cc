@@ -7,7 +7,7 @@ void App::setup()
     pCamera_ = yyCameraPerspective::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
     pShader_ = yyShader::create("../shader/blinnphong.vert", "../shader/blinnphong.frag");
-    pShaderCubemap_ = yyShader::create("../shader/skybox.vert", "../shader/skybox.frag");
+    pShaderSkybox_ = yyShader::create("../shader/skybox.vert", "../shader/skybox.frag");
 
     std::vector<std::string> images = {
         std::string("../assets/skybox3/right.jpg"),
@@ -45,31 +45,29 @@ void App::update()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
+    pShader_->begin();
+    pShader_->setInt("useVertexColor", false);
+    // light properties
+    pShader_->setVec3("light.position", yyTransformPoint(pCamera_->viewMat_, pointLight_.position));
+    pShader_->setVec3("light.color_ambient", ambientLight_.color * ambientLight_.intensity);
+    pShader_->setVec3("light.color", pointLight_.color * pointLight_.intensity);
+    pShader_->setFloat("light.constant", pointLight_.constant);
+    pShader_->setFloat("light.linear", pointLight_.linear);
+    pShader_->setFloat("light.quadratic", pointLight_.quadratic);
+    // material properties
+    pShader_->setFloat("material.shininess", 128.0f);
+    // draw
     for (auto &pMesh: pModel_->getMeshs()) {
-        pShader_->begin();
-        pShader_->setInt("useVertexColor", false);
-
-        // light properties
-        pShader_->setVec3("light.position", yyTransformPoint(pCamera_->viewMat_, pointLight_.position));
-        pShader_->setVec3("light.color_ambient", ambientLight_.color * ambientLight_.intensity);
-        pShader_->setVec3("light.color", pointLight_.color * pointLight_.intensity);
-        pShader_->setFloat("light.constant", pointLight_.constant);
-        pShader_->setFloat("light.linear", pointLight_.linear);
-        pShader_->setFloat("light.quadratic", pointLight_.quadratic);
-
-        // material properties
-        pShader_->setFloat("material.shininess", 128.0f);
-
         pMesh->draw(pCamera_, pShader_, false);
-        pShader_->end();
     }
+    pShader_->end();
 
     // 渲染skybox
     glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
-    pShaderCubemap_->begin();
+    pShaderSkybox_->begin();
     pSkybox_->setTranslation(pCamera_->position_);
-    pSkybox_->draw(pCamera_, pShaderCubemap_, false);
-    pShaderCubemap_->end();
+    pSkybox_->draw(pCamera_, pShaderSkybox_, false);
+    pShaderSkybox_->end();
     glDepthFunc(GL_LESS); // set depth function back to default
     
     yyShaderCheckError();

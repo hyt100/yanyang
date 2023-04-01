@@ -18,7 +18,7 @@ void App::setup()
 
 void App::update()
 {
-    // 特效0: 模糊
+    // 特效0: 模糊多次
     bool isFirst = true;
     for (int i = 0; i < 300; ++i) {
         pPostProcess_->beginPass();
@@ -36,7 +36,7 @@ void App::update()
         pPostProcess_->endPass();
     }
 
-    // 特效2：反色
+    // 特效1：反色
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
     pShaderEffective1_->begin();
