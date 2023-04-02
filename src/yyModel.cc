@@ -146,21 +146,27 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
         }
 
         yyTexture::Ptr pTexture;
+
         auto embededTextrure = scene->GetEmbeddedTexture(texturePath.C_Str()); //检测是否是内嵌的材质
         if (embededTextrure) {
             // 如果mHeight为0，则pcData中存储了压缩格式像素，mWidth指定数据大小;
-            // 如果mHeight不为0，则pcData中存储了ARGB8888格式像素，mWidth * mHeight指定像素数据大小
+            // 如果mHeight不为0，则pcData中存储了已解码的裸像素，mWidth * mHeight指定数据大小 (猜测是类似bmp格式这样有文件头的裸数据)
             if (embededTextrure->mHeight == 0) {
                 pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth, 
                                 convertTextureType(type), false);
             } else {
-                //TODO
+                std::cout << "debug: embeded raw texture (" << embededTextrure->achFormatHint << ") " << std::endl;
+                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth * embededTextrure->mHeight, 
+                                convertTextureType(type), false);
             }
         } else {
             pTexture = yyTexture::create(filename, convertTextureType(type), false);
         }
-        out.emplace_back(pTexture);
-        texturesMap_[filename] = pTexture;
+
+        if (pTexture) {
+            out.emplace_back(pTexture);
+            texturesMap_[filename] = pTexture;
+        }
     }
 }
 

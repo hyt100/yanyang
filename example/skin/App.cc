@@ -19,14 +19,8 @@ void App::setup()
     };
     pSkybox_ = yyMeshSkybox::create(images);
 
-    pModel_ = yyModel::create("../assets/shield/shield.ply"); //shield.ply中没有带贴图，因此需要加载完模型后补上纹理
-    std::vector<yyTexture::Ptr> pTextures;
-    pTextures.push_back(yyTexture::create("../assets/shield/shield_diffuse.png", yyTextureType_DIFFUSE, false));
-    pTextures.push_back(yyTexture::create("../assets/shield/shield_spec.png", yyTextureType_SPECULAR, false));
-    std::cout << "model mesh num: " << pModel_->getMeshs().size() << std::endl;
-    for (auto &pMesh: pModel_->getMeshs()) {
-        pMesh->setTextures(pTextures);
-    }
+    // pModel_ = yyModel::create("../assets/animations/HipHopDancing.fbx");
+    pModel_ = yyModel::create("../assets/animations/test.fbx");
 
     ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
     ambientLight_.intensity = 1.0f;
