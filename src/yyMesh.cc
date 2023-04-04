@@ -1,12 +1,14 @@
 #include "yyMesh.h"
 
-#define YY_ATTR_VERTEX      0
-#define YY_ATTR_COLOR       1
-#define YY_ATTR_NORMAL      2
-#define YY_ATTR_TEXCOORD    3
-#define YY_ATTR_TANGENT     4
-#define YY_ATTR_BITANGENT   5
-#define YY_ATTR_MAX         6
+#define YY_ATTR_VERTEX        0
+#define YY_ATTR_COLOR         1
+#define YY_ATTR_NORMAL        2
+#define YY_ATTR_TEXCOORD      3
+#define YY_ATTR_TANGENT       4
+#define YY_ATTR_BITANGENT     5
+#define YY_ATTR_BONE_ID       6
+#define YY_ATTR_BONE_WEIGHT   7
+#define YY_ATTR_MAX           8
 
 yyMesh::yyMesh()
 {
@@ -91,6 +93,24 @@ void yyMesh::build()
         glVertexAttribPointer(YY_ATTR_BITANGENT, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(YY_ATTR_BITANGENT);
     }
+    if (boneIDs_.size()) {
+        if (boneIDs_.size() != vertexsSize) {
+            std::cout << "warning: boneIDs size abnormal" << std::endl;
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_BONE_ID]);
+        glBufferData(GL_ARRAY_BUFFER, boneIDs_.size() * sizeof(boneIDs_[0]), boneIDs_.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(YY_ATTR_BONE_ID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(int), (void*)0);
+        glEnableVertexAttribArray(YY_ATTR_BONE_ID);
+    }
+    if (boneWeights_.size()) {
+        if (boneWeights_.size() != vertexsSize) {
+            std::cout << "warning: boneWeights size abnormal" << std::endl;
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_BONE_WEIGHT]);
+        glBufferData(GL_ARRAY_BUFFER, boneWeights_.size() * sizeof(boneWeights_[0]), boneWeights_.data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(YY_ATTR_BONE_WEIGHT, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(YY_ATTR_BONE_WEIGHT);
+    }
 
     // unbind
     glBindVertexArray(0);
@@ -135,12 +155,12 @@ void yyMesh::updateMatrix()
     }
 }
 
-void yyMesh::draw(const yyCamera::Ptr &camera, yyShader::Ptr &shader, bool wireframeMode)
+void yyMesh::draw(const yyCamera::Ptr &pCamera, yyShader::Ptr &shader, bool wireframeMode)
 {
     // calculate MVP
     updateMatrix();
-    glm::mat4 mvpMat = camera->viewProjectionMat_ * modelMat_;
-    glm::mat4 mvMat = camera->viewMat_ * modelMat_;
+    glm::mat4 mvpMat = pCamera->viewProjectionMat_ * modelMat_;
+    glm::mat4 mvMat = pCamera->viewMat_ * modelMat_;
     glm::mat3 normalMat = glm::mat3(glm::transpose(glm::inverse(mvMat)));  // in view space
     shader->setMat4("mMat", modelMat_);
     shader->setMat4("mvMat", mvMat);

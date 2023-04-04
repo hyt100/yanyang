@@ -24,9 +24,8 @@ void App::setup()
     pTextures.push_back(yyTexture::create("../assets/shield/shield_diffuse.png", yyTextureType_DIFFUSE, false));
     pTextures.push_back(yyTexture::create("../assets/shield/shield_spec.png", yyTextureType_SPECULAR, false));
     std::cout << "model mesh num: " << pModel_->getMeshs().size() << std::endl;
-    for (auto &pMesh: pModel_->getMeshs()) {
-        pMesh->setTextures(pTextures);
-    }
+    std::vector<yyMesh::Ptr> &pMeshs = pModel_->getMeshs();
+    pMeshs[0]->setTextures(pTextures);
 
     ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
     ambientLight_.intensity = 1.0f;
@@ -58,9 +57,7 @@ void App::update()
     // material properties
     pShader_->setFloat("material.shininess", 128.0f);
     // draw
-    for (auto &pMesh: pModel_->getMeshs()) {
-        pMesh->draw(pCamera_, pShader_, false);
-    }
+    pModel_->draw(pCamera_, pShader_, false);
     pShader_->end();
 
     // 渲染skybox

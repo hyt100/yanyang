@@ -22,6 +22,11 @@ public:
     void setRotation(const glm::quat &quat)               { for (auto &pMesh: pMeshs_) pMesh->setRotation(quat); }
     void setTranslation(const glm::vec3 &position)        { for (auto &pMesh: pMeshs_) pMesh->setTranslation(position); }
     void setModelMatrix(const glm::mat4 &mat)             { for (auto &pMesh: pMeshs_) pMesh->setModelMatrix(mat); }
+    void draw(const yyCamera::Ptr &pCamera, yyShader::Ptr &pShader, bool wireframeMode = false)
+    {
+        for (auto &pMesh: pMeshs_)
+            pMesh->draw(pCamera, pShader, wireframeMode);
+    }
 
 private:
     yyModel(const std::string &filename);
