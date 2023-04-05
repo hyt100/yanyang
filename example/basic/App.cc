@@ -17,7 +17,11 @@ void App::setup()
     pPlane_->setRotation(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 }
 
-void App::update()
+void App::update(float deltaTime)
+{
+}
+
+void App::draw()
 {
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);

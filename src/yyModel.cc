@@ -19,6 +19,12 @@ yyModel::yyModel(const std::string &filename)
 
     // process ASSIMP's root node recursively
     processNode(scene, scene->mRootNode);
+
+    genAnimationNode(rootAnimationNode_, scene->mRootNode);
+
+    if (scene->mNumAnimations > 0) {
+        processAnimation(scene);
+    }
 }
 
 void yyModel::processNode(const aiScene *scene, aiNode *node)
@@ -140,15 +146,18 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
         std::string boneName = bone->mName.C_Str();
 
         unsigned int boneID = -1;
-        if (boneInfoMap_.find(boneName) != boneInfoMap_.end()) {
-            boneID = boneInfoMap_[boneName].id;
+        if (boneMap_.find(boneName) != boneMap_.end()) {
+            boneID = boneMap_[boneName]->id_;
+
         } else {
             boneID = boneCounter_++;
 
-            yyBoneInfo boneInfo;
-            boneInfo.id = boneID;
-            boneInfo.offsetMatrix = yyAssimpHelper::toGlmMat4(bone->mOffsetMatrix);
-            boneInfoMap_[boneName] = boneInfo;
+            yyBone::Ptr pBone = yyBone::create();
+            pBone->id_           = boneID;
+            pBone->name_         = boneName;
+            pBone->offsetMatrix_ = yyAssimpHelper::toGlmMat4(bone->mOffsetMatrix);
+
+            boneMap_[boneName] = pBone;
         }
 
         for (int j = 0; j < bone->mNumWeights; ++j) {
@@ -212,3 +221,64 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
     }
 }
 
+void yyModel::genAnimationNode(yyAnimationNode &aniNode, aiNode *node)
+{
+    aniNode.name = node->mName.C_Str();
+    aniNode.transform = yyAssimpHelper::toGlmMat4(node->mTransformation);
+
+    for (int i = 0; i < node->mNumChildren; ++i) {
+        yyAnimationNode aniNodeChild;
+        genAnimationNode(aniNodeChild, node->mChildren[i]);
+        aniNode.children.emplace_back(aniNodeChild);
+    }
+}
+
+void yyModel::processAnimation(const aiScene *scene)
+{
+    for (int i = 0; i < scene->mNumAnimations; ++i) {
+        aiAnimation* animation = scene->mAnimations[i];
+
+        yyAnimation::Ptr p = yyAnimation::create();
+        p->duration_       = (float)(animation->mDuration);
+        p->ticksPerSecond_ = (float)(animation->mTicksPerSecond);
+        p->boneCounter_    = boneCounter_;
+        p->boneMap_        = boneMap_;
+        p->rootNode_       = rootAnimationNode_;
+
+        for (int j = 0; j < animation->mNumChannels; ++j) {
+            aiNodeAnim* channel = animation->mChannels[i];
+
+			// 补全boneInfoMap: 有一些bone在前面还没出现的
+			std::string boneName = channel->mNodeName.C_Str();
+			if (p->boneMap_.find(boneName) == p->boneMap_.end()) {
+                yyBone::Ptr pBone = yyBone::create();
+                pBone->id_        = p->boneCounter_ ++;
+                pBone->name_      = boneName;
+                p->boneMap_[boneName] = pBone;
+			}
+
+			// 读取骨骼关键帧信息
+			auto& pBone = p->boneMap_[boneName];
+            for (int k = 0; k < channel->mNumPositionKeys; ++k) {
+                yyKeyPosition keyPosition;
+                keyPosition.position  = yyAssimpHelper::toGlmVec3(channel->mPositionKeys[k].mValue);
+                keyPosition.timestamp = (float)(channel->mPositionKeys[k].mTime);
+                pBone->keyPositionArr_.emplace_back(keyPosition);
+            }
+            for (int k = 0; k < channel->mNumRotationKeys; ++k) {
+                yyKeyRotation keyRotation;
+                keyRotation.quaternion = yyAssimpHelper::toGlmQuat(channel->mRotationKeys[k].mValue);
+                keyRotation.timestamp  = (float)(channel->mRotationKeys[k].mTime);
+                pBone->keyRotationArr_.emplace_back(keyRotation);
+            }
+            for (int k = 0; k < channel->mNumScalingKeys; ++k) {
+                yyKeyScale keyScale;
+                keyScale.scale     = yyAssimpHelper::toGlmVec3(channel->mScalingKeys[k].mValue);
+                keyScale.timestamp = (float)(channel->mScalingKeys[k].mTime);
+                pBone->keyScaleArr_.emplace_back(keyScale);
+            }
+		}
+
+        animations_.emplace_back(p);
+    }
+}

@@ -38,7 +38,11 @@ void App::setup()
     pointLight_.quadratic = 0.032f;
 }
 
-void App::update()
+void App::update(float deltaTime)
+{
+}
+
+void App::draw()
 {
     // 渲染model
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

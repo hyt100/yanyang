@@ -16,7 +16,11 @@ void App::setup()
     pPostProcess_ = yyPostProcess::create(yyFrambuffWidth, yyFrambuffHeight);
 }
 
-void App::update()
+void App::update(float deltaTime)
+{
+}
+
+void App::draw()
 {
     // 特效0: 模糊多次
     bool isFirst = true;

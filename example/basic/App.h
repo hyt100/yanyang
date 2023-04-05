@@ -13,7 +13,8 @@ public:
             pCamera_->keyprocess(event);
         }
     }
-    void update();
+    void update(float deltaTime);
+    void draw();
 
 private:
     yyCameraPerspective::Ptr pCamera_;

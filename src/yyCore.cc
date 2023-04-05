@@ -51,18 +51,25 @@ int yyCore::run(yyBaseApp *app)
     app_->setup();
 
     // render loop
+    float lastTime = glfwGetTime(); // in seconds
     while (!glfwWindowShouldClose(window_))
     {
         // input
         processInput();
 
-        // render
+        // render init
         if (antialias_)
             glEnable(GL_MULTISAMPLE);
         if (outputSRGB_)
             glEnable(GL_FRAMEBUFFER_SRGB);
         glViewport(0, 0, framebuffWidth_, framebuffHeight_);
-        app_->update();
+
+        // render
+        float currentTime = glfwGetTime(); // in seconds
+        float deltaTime = currentTime - lastTime;
+        lastTime = currentTime;
+        app_->update(deltaTime);
+        app_->draw();
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         glfwSwapBuffers(window_);

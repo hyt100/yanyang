@@ -20,6 +20,8 @@ void App::setup()
     pSkybox_ = yyMeshSkybox::create(images);
 
     pModel_ = yyModel::create("../assets/animations/test.fbx");
+    pModel_->setScale(glm::vec3(0.001, 0.001, 0.001));
+    pModel_->playAnimation(0);
 
     ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
     ambientLight_.intensity = 1.0f;
@@ -32,7 +34,12 @@ void App::setup()
     pointLight_.quadratic = 0.032f;
 }
 
-void App::update()
+void App::update(float deltaTime)
+{
+    pModel_->update(deltaTime);
+}
+
+void App::draw()
 {
     // 渲染model
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
