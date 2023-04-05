@@ -1,8 +1,7 @@
 #pragma once
 #include "yyMesh.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "yyBone.h"
+#include "yyAssimpHelper.h"
 
 class yyModel
 {
@@ -34,10 +33,12 @@ private:
     void processNode(const aiScene *scene, aiNode *node);
     yyMesh::Ptr processMesh(const aiScene *scene, aiMesh *mesh);
     void loadMaterialTextures(const aiScene *scene, aiMaterial *mat, aiTextureType type, std::vector<yyTexture::Ptr> &out);
-    yyTextureType convertTextureType(aiTextureType type);
+    void loadBoneWeightForVertices(const aiScene *scene, aiMesh *mesh, std::vector<glm::ivec4> &boneIDs, std::vector<glm::vec4> &boneWeights);
 
     std::vector<yyMesh::Ptr> pMeshs_;
     std::string rootDirectory_;
     // stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
     std::map<std::string, yyTexture::Ptr> texturesMap_;
+    std::map<std::string, yyBoneInfo> boneInfoMap_;
+    unsigned int boneCounter_ = 0;
 };

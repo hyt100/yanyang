@@ -4,7 +4,8 @@
 #include "yyShader.h"
 #include "yyCamera.h"
 
-#define yyMAX_BONE_INFLUENCE 4
+#define yyMAX_BONE_NUM         200
+#define yyMAX_BONE_INFLUENCE   4
 
 class yyMesh
 {

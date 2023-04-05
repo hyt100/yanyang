@@ -1,12 +1,5 @@
 #include "yyModel.h"
 
-static const std::map<aiTextureType, yyTextureType> kTextureTypeMapping = {
-    {aiTextureType_DIFFUSE,  yyTextureType_DIFFUSE},
-    {aiTextureType_SPECULAR, yyTextureType_SPECULAR},
-    {aiTextureType_NORMALS,  yyTextureType_NORMAL},
-    {aiTextureType_AMBIENT,  yyTextureType_AMBIENT}
-};
-
 yyModel::yyModel(const std::string &filename)
 {
     Assimp::Importer importer;
@@ -53,6 +46,8 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
     std::vector<glm::vec2> texCoords;
     std::vector<glm::vec3> tangents;
     std::vector<glm::vec3> bitangents;
+    std::vector<glm::ivec4> boneIDs;
+    std::vector<glm::vec4>  boneWeights;
     std::vector<unsigned int> indices;
     std::vector<yyTexture::Ptr> pTextures;
 
@@ -86,6 +81,11 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
             indices.push_back(face.mIndices[j]);
     }
 
+    // process bones
+    if (mesh->HasBones()) {
+        loadBoneWeightForVertices(scene, mesh, boneIDs, boneWeights);
+    }
+
     // process materials
     if (scene->mNumMaterials > 0 && mesh->mMaterialIndex >= 0) {
         std::vector<yyTexture::Ptr> pTexturesDiffuse;
@@ -103,7 +103,7 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
         loadMaterialTextures(scene, material, aiTextureType_AMBIENT, pTexturesAmbient);
         pTextures.insert(pTextures.end(), pTexturesAmbient.begin(), pTexturesAmbient.end());
     }
-    
+
     // create and build mesh
     auto pMesh = yyMesh::create();
     pMesh->setAttrIndice(indices);
@@ -113,6 +113,8 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
     pMesh->setAttrTexCoord(texCoords);
     pMesh->setAttrTangent(tangents);
     pMesh->setAttrBitangent(bitangents);
+    pMesh->setAttrBoneID(boneIDs);
+    pMesh->setAttrBoneWeight(boneWeights);
     pMesh->setTextures(pTextures);
     pMesh->build();
     std::cout << "model vertex size: " << vertexs.size() << std::endl;
@@ -120,12 +122,48 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
     return pMesh;
 }
 
-yyTextureType yyModel::convertTextureType(aiTextureType type)
+void yyModel::loadBoneWeightForVertices(const aiScene *scene, 
+                                        aiMesh *mesh, 
+                                        std::vector<glm::ivec4> &boneIDs,
+                                        std::vector<glm::vec4> &boneWeights)
 {
-    if (kTextureTypeMapping.find(type) != kTextureTypeMapping.end())
-        return kTextureTypeMapping.at(type);
-    else
-        return yyTextureType_NONE;
+    int vertexNum = mesh->mNumVertices;
+    boneIDs.resize(vertexNum);
+    boneWeights.resize(vertexNum);
+    for (int i = 0; i < vertexNum; ++i) {
+        boneIDs[i] = glm::ivec4(-1, -1, -1, -1);
+        boneWeights[i] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    }
+
+    for (int i = 0; i < mesh->mNumBones; ++i) {
+        aiBone* bone = mesh->mBones[i];
+        std::string boneName = bone->mName.C_Str();
+
+        unsigned int boneID = -1;
+        if (boneInfoMap_.find(boneName) != boneInfoMap_.end()) {
+            boneID = boneInfoMap_[boneName].id;
+        } else {
+            boneID = boneCounter_++;
+
+            yyBoneInfo boneInfo;
+            boneInfo.id = boneID;
+            boneInfo.offsetMatrix = yyAssimpHelper::toGlmMat4(bone->mOffsetMatrix);
+            boneInfoMap_[boneName] = boneInfo;
+        }
+
+        for (int j = 0; j < bone->mNumWeights; ++j) {
+            int vertexIndex    = bone->mWeights[j].mVertexId;
+            float vertexWeight = bone->mWeights[j].mWeight;
+
+            // 找到一个没有设置的骨骼权重，如果设置满了就不能再设置了，也就是说我们只取其中四个权重，超过了就不处理了
+            for (int k = 0; k < yyMAX_BONE_INFLUENCE; ++k) {
+                if (boneIDs[vertexIndex][k] < 0) {
+                    boneIDs[vertexIndex][k]     = boneID;
+                    boneWeights[vertexIndex][k] = vertexWeight;
+                }
+            }
+        }
+    }
 }
 
 void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, aiTextureType type, std::vector<yyTexture::Ptr> &out)
@@ -152,15 +190,19 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
             // 如果mHeight为0，则pcData中存储了压缩格式像素，mWidth指定数据大小;
             // 如果mHeight不为0，则pcData中存储了已解码的裸像素，mWidth * mHeight指定数据大小 (猜测是类似bmp格式这样有文件头的裸数据)
             if (embededTextrure->mHeight == 0) {
-                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth, 
-                                convertTextureType(type), false);
+                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), 
+                                             embededTextrure->mWidth, 
+                                             yyAssimpHelper::toTextureType(type), 
+                                             false);
             } else {
                 std::cout << "debug: embeded raw texture (" << embededTextrure->achFormatHint << ") " << std::endl;
-                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), embededTextrure->mWidth * embededTextrure->mHeight, 
-                                convertTextureType(type), false);
+                pTexture = yyTexture::create(reinterpret_cast<uint8_t*>(embededTextrure->pcData), 
+                                             embededTextrure->mWidth * embededTextrure->mHeight, 
+                                             yyAssimpHelper::toTextureType(type), 
+                                             false);
             }
         } else {
-            pTexture = yyTexture::create(filename, convertTextureType(type), false);
+            pTexture = yyTexture::create(filename, yyAssimpHelper::toTextureType(type), false);
         }
 
         if (pTexture) {

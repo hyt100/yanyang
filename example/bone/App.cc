@@ -6,7 +6,7 @@ void App::setup()
     glm::vec3 cameraTarget(0.0f, 0.0f, 0.0f);
     pCamera_ = yyCameraPerspective::create(yyFrambuffWidth, yyFrambuffHeight, 45.0f, 0.1f, 100.0f, cameraPosition, cameraTarget);
 
-    pShader_ = yyShader::create("../shader/blinnphong.vert", "../shader/blinnphong.frag");
+    pShader_ = yyShader::create("../shader/blinnphong_bone.vert", "../shader/blinnphong.frag");
     pShaderSkybox_ = yyShader::create("../shader/skybox.vert", "../shader/skybox.frag");
 
     std::vector<std::string> images = {
@@ -19,7 +19,6 @@ void App::setup()
     };
     pSkybox_ = yyMeshSkybox::create(images);
 
-    // pModel_ = yyModel::create("../assets/animations/HipHopDancing.fbx");
     pModel_ = yyModel::create("../assets/animations/test.fbx");
 
     ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -52,9 +51,7 @@ void App::update()
     // material properties
     pShader_->setFloat("material.shininess", 128.0f);
     // draw
-    for (auto &pMesh: pModel_->getMeshs()) {
-        pMesh->draw(pCamera_, pShader_, false);
-    }
+    pModel_->draw(pCamera_, pShader_, false);
     pShader_->end();
 
     // 渲染skybox
