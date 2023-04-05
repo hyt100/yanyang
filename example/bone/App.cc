@@ -21,7 +21,7 @@ void App::setup()
 
     pModel_ = yyModel::create("../assets/animations/test.fbx");
     pModel_->setScale(glm::vec3(0.001, 0.001, 0.001));
-    pModel_->playAnimation(0);
+    // pModel_->playAnimation(0);
 
     ambientLight_.color = glm::vec3(0.5f, 0.5f, 0.5f);
     ambientLight_.intensity = 1.0f;

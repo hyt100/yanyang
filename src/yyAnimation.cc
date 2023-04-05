@@ -16,6 +16,7 @@ void yyAnimation::play()
 
 void yyAnimation::update(float deltaTime)
 {
+    // std::cout << "update animation ..." << std::endl;
     curTime_ += ticksPerSecond_ * deltaTime;
     curTime_ = std::fmod(curTime_, duration_);
 

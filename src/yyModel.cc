@@ -155,6 +155,8 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
             yyBone::Ptr pBone = yyBone::create();
             pBone->id_           = boneID;
             pBone->name_         = boneName;
+            // 因为模型的所有顶点坐标都是在模型坐标系下的，而我们需要知道在某个骨骼上局部坐标系下的点，就可以用 mOffsetMatrix，
+            // 也就是说，mOffsetMatrix是把模型坐标系下的点 转换到 局部坐标系下。
             pBone->offsetMatrix_ = yyAssimpHelper::toGlmMat4(bone->mOffsetMatrix);
 
             boneMap_[boneName] = pBone;
