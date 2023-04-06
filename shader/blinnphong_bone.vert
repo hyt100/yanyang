@@ -1,10 +1,10 @@
 #version 330 core
-layout (location = 0) in vec3 vPos;
-layout (location = 1) in vec4 vColor;
-layout (location = 2) in vec3 vNormal;
-layout (location = 3) in vec2 vUv;
+layout (location = 0) in vec3  vPos;
+layout (location = 1) in vec4  vColor;
+layout (location = 2) in vec3  vNormal;
+layout (location = 3) in vec2  vUv;
 layout (location = 6) in ivec4 vBoneID;
-layout (location = 7) in vec4 vBoneWeight;
+layout (location = 7) in vec4  vBoneWeight;
 
 const int MAX_BONES = 200;         // mesh最多允许的骨骼数量
 const int MAX_BONE_INFLUENCE = 4;  // 影响每个顶点的骨骼最多数量(如果真实情况不止四个，我们也只取四个)

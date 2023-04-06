@@ -23,6 +23,7 @@ yyModel::yyModel(const std::string &filename)
     genAnimationNode(rootAnimationNode_, scene->mRootNode);
 
     if (scene->mNumAnimations > 0) {
+        std::cout << "animation num is " << scene->mNumAnimations << std::endl;
         processAnimation(scene);
     }
 }
@@ -141,6 +142,7 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
         boneWeights[i] = glm::vec4(0.0f, 0.0f, 0.0f, 0.0f);
     }
 
+    // mBones 数组里面存储了所有的骨骼，每个骨骼存储对应绑定的顶点和该顶点的权重
     for (int i = 0; i < mesh->mNumBones; ++i) {
         aiBone* bone = mesh->mBones[i];
         std::string boneName = bone->mName.C_Str();
@@ -155,8 +157,9 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
             yyBone::Ptr pBone = yyBone::create();
             pBone->id_           = boneID;
             pBone->name_         = boneName;
-            // 因为模型的所有顶点坐标都是在模型坐标系下的，而我们需要知道在某个骨骼上局部坐标系下的点，就可以用 mOffsetMatrix，
-            // 也就是说，mOffsetMatrix是把模型坐标系下的点 转换到 局部坐标系下。
+            // 因为模型的所有顶点坐标都是在model space坐标系下的，而我们需要知道在某个骨骼上bone space坐标系下的点，
+            // 我们可以逐级遍历得到 BoneToWorldMatrix, 这个矩阵的逆矩阵就可以把model space坐标系下的点转换到bone space下的点。
+            // mOffsetMatrix就是这样的逆矩阵，也就是说，mOffsetMatrix是把model space坐标系下的点 转换到 bone space坐标系下。
             pBone->offsetMatrix_ = yyAssimpHelper::toGlmMat4(bone->mOffsetMatrix);
 
             boneMap_[boneName] = pBone;
@@ -171,6 +174,7 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
                 if (boneIDs[vertexIndex][k] < 0) {
                     boneIDs[vertexIndex][k]     = boneID;
                     boneWeights[vertexIndex][k] = vertexWeight;
+                    break;  // 设置成功就退出
                 }
             }
         }
@@ -225,6 +229,7 @@ void yyModel::loadMaterialTextures(const aiScene *scene, aiMaterial *material, a
 
 void yyModel::genAnimationNode(yyAnimationNode &aniNode, aiNode *node)
 {
+    // 在Assimp的规定中，每一个 bone 必定会有一个相同名称的 node 与其对应，反过来不成立
     aniNode.name = node->mName.C_Str();
     aniNode.transform = yyAssimpHelper::toGlmMat4(node->mTransformation);
 

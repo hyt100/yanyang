@@ -27,6 +27,7 @@ public:
     void playAnimation(int index = 0)
     {
         if (0 <= index && index < animations_.size()) {
+            std::cout << "choose animation " << index << std::endl;
             chooseAnimation_ = animations_[index];
             chooseAnimation_->play();
         } else {
@@ -45,7 +46,7 @@ public:
     {
         if (chooseAnimation_) {
             auto &boneMatArr = chooseAnimation_->getBoneMatArr();
-            for (int i = 0; i < boneMatArr.size(); ++i) { 
+            for (int i = 0; i < boneMatArr.size(); ++i) {
                 pShader->setMat4("boneMat[" + std::to_string(i) + "]", boneMatArr[i]);
             }
         }
