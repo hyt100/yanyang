@@ -34,9 +34,15 @@ void yyAnimation::calBoneMat(yyAnimationNode &node, glm::mat4 &parentTransform)
         pBone->update(curTime_); // 插值更新
 
         transform = parentTransform * pBone->getLocalTransform();
+        // transform = parentTransform * node.transform;
+
+        // std::cout << ">>> " << std::endl;
+        // std::cout << glm::to_string(pBone->getLocalTransform()) << std::endl;
+        // std::cout << glm::to_string(node.transform) << std::endl;
 
         if (pBone->id_ < yyMAX_BONE_NUM) {
             boneMatArr_[pBone->id_] = transform * pBone->offsetMatrix_;  // 有骨骼的话才需要输出boneMat
+            // std::cout << glm::to_string(boneMatArr_[pBone->id_]) << std::endl;
         }
 
     } else {

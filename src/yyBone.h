@@ -6,17 +6,17 @@
 
 struct yyKeyPosition {
     glm::vec3	position;
-    float		timestamp;
+    float		timestamp;  // in ticks
 };
 
 struct yyKeyRotation {
     glm::quat	quaternion;
-    float		timestamp;
+    float		timestamp;  // in ticks
 };
 
 struct yyKeyScale {
     glm::vec3	scale;
-    float		timestamp;
+    float		timestamp;  // in ticks
 };
 
 class yyBone

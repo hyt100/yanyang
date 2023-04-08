@@ -17,14 +17,17 @@ yyModel::yyModel(const std::string &filename)
     // retrieve the directory path of the filepath
     rootDirectory_ = filename.substr(0, filename.find_last_of('/'));
 
+    // std::cout << glm::to_string(yyAssimpHelper::toGlmMat4(scene->mRootNode->mTransformation)) << std::endl;
+
     // process ASSIMP's root node recursively
     processNode(scene, scene->mRootNode);
 
     genAnimationNode(rootAnimationNode_, scene->mRootNode);
 
     if (scene->mNumAnimations > 0) {
-        std::cout << "animation num is " << scene->mNumAnimations << std::endl;
         processAnimation(scene);
+
+        std::cout << "animation num is " << scene->mNumAnimations << std::endl;
     }
 }
 
@@ -169,6 +172,8 @@ void yyModel::loadBoneWeightForVertices(const aiScene *scene,
             int vertexIndex    = bone->mWeights[j].mVertexId;
             float vertexWeight = bone->mWeights[j].mWeight;
 
+            assert(vertexIndex < vertexNum);
+
             // 找到一个没有设置的骨骼权重，如果设置满了就不能再设置了，也就是说我们只取其中四个权重，超过了就不处理了
             for (int k = 0; k < yyMAX_BONE_INFLUENCE; ++k) {
                 if (boneIDs[vertexIndex][k] < 0) {
@@ -253,7 +258,7 @@ void yyModel::processAnimation(const aiScene *scene)
         p->rootNode_       = rootAnimationNode_;
 
         for (int j = 0; j < animation->mNumChannels; ++j) {
-            aiNodeAnim* channel = animation->mChannels[i];
+            aiNodeAnim* channel = animation->mChannels[j];
 
 			// 补全boneInfoMap: 有一些bone在前面还没出现的
 			std::string boneName = channel->mNodeName.C_Str();
@@ -284,7 +289,19 @@ void yyModel::processAnimation(const aiScene *scene)
                 keyScale.timestamp = (float)(channel->mScalingKeys[k].mTime);
                 pBone->keyScaleArr_.emplace_back(keyScale);
             }
+
+            // if (channel->mNumPositionKeys && channel->mNumRotationKeys && channel->mNumScalingKeys) {
+            //     std::cout << j << "   num: " << channel->mNumPositionKeys << ", " << channel->mNumRotationKeys << ", " << channel->mNumScalingKeys << std::endl;
+            //     glm::mat4 trans = glm::translate(glm::mat4(1.0f), yyAssimpHelper::toGlmVec3(channel->mPositionKeys[0].mValue)) *
+            //                       glm::toMat4(yyAssimpHelper::toGlmQuat(channel->mRotationKeys[0].mValue)) *
+            //                       glm::scale(glm::mat4(1.0f), yyAssimpHelper::toGlmVec3(channel->mScalingKeys[0].mValue));
+            //     std::cout << glm::to_string(trans) << std::endl;
+            // }
 		}
+
+        if (p->boneCounter_ >= yyMAX_BONE_NUM) {
+            std::cout << "warning: bone num is greater than " << yyMAX_BONE_NUM << std::endl;
+        }
 
         animations_.emplace_back(p);
     }
