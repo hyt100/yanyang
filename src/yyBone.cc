@@ -113,5 +113,5 @@ void yyBone::update(float time)
     glm::mat4 scale       = interpolateScale(time);
     glm::mat4 translation = interpolatePosition(time);
 
-    localTransform_ = translation * scale * rotation;
+    localTransform_ = translation * rotation * scale;
 }
