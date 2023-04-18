@@ -63,7 +63,9 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
 
     // walk through each of the mesh's vertices
     for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-        vertexs.emplace_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
+        if (mesh->HasPositions()) {
+            vertexs.emplace_back(glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
+        }
 
         if (mesh->HasNormals()) {
             normals.emplace_back(glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
@@ -71,13 +73,16 @@ yyMesh::Ptr yyModel::processMesh(const aiScene *scene, aiMesh *mesh)
 
         // a vertex can contain up to 8 different texture coordinates. We thus make the assumption that we won't 
         // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
-        if (mesh->mTextureCoords[0]) {
+        if (mesh->HasTextureCoords(0)) {
             texCoords.emplace_back(glm::vec2(mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y));
+        }
+
+        if (mesh->HasTangentsAndBitangents()) {
             tangents.emplace_back(glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z));
             bitangents.emplace_back(glm::vec3(mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z));
         }
 
-        if (mesh->mColors[0]) {
+        if (mesh->HasVertexColors(0)) {
             colors.emplace_back(glm::vec4(mesh->mColors[0][i].r, mesh->mColors[0][i].g, mesh->mColors[0][i].b, mesh->mColors[0][i].a));
         }
     }
