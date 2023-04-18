@@ -29,7 +29,7 @@ void main()
       continue;
     }
 
-    skinPos += vec4(vBoneWeight[i]) * boneMat[vBoneID[i]] * vec4(vPos, 1.0); // fixed: 由于权重之和可能不为1，所以这里w分量也要累加，最后化为1
+    skinPos += vBoneWeight[i] * boneMat[vBoneID[i]] * vec4(vPos, 1.0); // fixed: 由于权重之和可能不为1，所以这里w分量也要累加，最后化为1
     boneCount++;
   }
   if (boneCount == 0) {

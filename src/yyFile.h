@@ -1,7 +1,11 @@
 #pragma once
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <stdint.h>
 #include <stdio.h>
+#include <string>
+#include <vector>
 
 class yyFileReader {
 public:
@@ -50,4 +54,15 @@ private:
     int size_;
     uint8_t* data_;
     bool error_;
+};
+
+class yyFileWriter {
+public:
+    static void save(const std::string &filename, std::vector<std::string> &lines)
+    {
+        std::ofstream outfile(filename);
+        for (auto &line: lines) {
+            outfile << line << std::endl;
+        }
+    }
 };

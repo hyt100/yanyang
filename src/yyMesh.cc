@@ -99,7 +99,7 @@ void yyMesh::build()
         }
         glBindBuffer(GL_ARRAY_BUFFER, vbos_[YY_ATTR_BONE_ID]);
         glBufferData(GL_ARRAY_BUFFER, boneIDs_.size() * sizeof(boneIDs_[0]), boneIDs_.data(), GL_STATIC_DRAW);
-        glVertexAttribPointer(YY_ATTR_BONE_ID, 4, GL_INT, GL_FALSE, 4 * sizeof(int), (void*)0);
+        glVertexAttribPointer(YY_ATTR_BONE_ID, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(int), (void*)0); // Fixed: 这里GL_FLOAT不能用GL_INT
         glEnableVertexAttribArray(YY_ATTR_BONE_ID);
     }
     if (boneWeights_.size()) {
